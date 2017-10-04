@@ -16,9 +16,11 @@ class othelloGame {
         // Load game from file
         void loadGame(std::string fileName);
 
+        // Moke a move
         void move();
 
+        // Update status of the game
         void updateStatus();
 };
 
-#endif
+#endif // GAME_HPP

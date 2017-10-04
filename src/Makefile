@@ -1,10 +1,10 @@
 .PHONY: clean debug run
 
 CXX = g++
-CXXFLAGS = -std=c++11 -Wall -Wextra
+CXXFLAGS = -std=c++11 -march=native -O3 -Wall -Wextra
 LDFLAGS =
 
-SOURCES = othello.cpp game.cpp
+SOURCES = othello.cpp game.cpp board.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 EXECUTABLE = othello.exe
 

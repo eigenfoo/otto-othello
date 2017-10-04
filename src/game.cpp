@@ -13,13 +13,16 @@ void othelloGame::newGame() {
 void othelloGame::loadGame(std::string fileName) {
     std::ifstream ifs;
     ifs.open(fileName.c_str());
+
     ifs.close();
 }
 
+// Make a move
 void othelloGame::move() {
 
 }
 
+// Update status of the game
 void othelloGame::updateStatus() {
 
 }

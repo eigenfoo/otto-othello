@@ -1,48 +1,61 @@
 #include <iostream>
-#include <string>
+#include <sstream>
+#include "game.hpp"
 
 bool promptAIPlayer(int player);
 int promptAITimeLimit(int player);
 
 int main() {
-    int choice = 0;
-    std::cout << "Load a game or start a new one?" << std::endl;
-    std::cout << "\t1 -> Start a new game" << std::endl;
-    std::cout << "\t2 -> Load a board from file" << std::endl;
+    othelloGame game;
+    int timeLimit1 = 0;
+    int timeLimit2 = 0;
+    bool player1AI = false;
+    bool player2AI = false;
 
-    while (true) {
+    // Prompt user for new or loaded game
+    int choice = 0;
+    std::string str;
+    bool validInput = false;
+    do {
+        std::cout << "Load a game or start a new one?" << std::endl;
+        std::cout << "\t1 -> Start a new game" << std::endl;
+        std::cout << "\t2 -> Load a board from file" << std::endl;
         std::cout << "\tSelection: ";
-        std::cin >> choice;
+        std::cin >> str;
+        std::istringstream iss(str);
+        iss >> choice;
 
         if (choice == 1 || choice == 2) {
-            break;
+            validInput = true;
         }
         else {
             std::cout << "\tInvalid input, please try again" << std::endl;
+            std::cout << std::endl;
         }
     }
-
+    while (!validInput);
     std::cout << std::endl;
 
-    if (choice == 2) {
-        std::string fileName;
-        std::cout << "Enter file name: ";
-        std::cin >> fileName;
-        // FIXME Somehow load the board!
-    }
-    else {
-        int timeLimit1 = 0;
-        int timeLimit2 = 0;
-
-        bool player1AI = promptAIPlayer(1);
+    // Initialize game appropriately
+    if (choice == 1) {
+        player1AI = promptAIPlayer(1);
         if (player1AI) {
             timeLimit1 = promptAITimeLimit(1);
         }
 
-        bool player2AI = promptAIPlayer(2);
+        player2AI = promptAIPlayer(2);
         if (player2AI) {
             timeLimit2 = promptAITimeLimit(2);
         }
+
+        game.newGame();
+    }
+    else {
+        std::string fileName;
+        std::cout << "Enter file name: ";
+        std::cin >> fileName;
+
+        game.loadGame(fileName);
     }
 
     // FIXME main game logic goes here
@@ -50,44 +63,64 @@ int main() {
     return 0;
 }
 
+// Prompts user if player n is the computer/AI
 bool promptAIPlayer(int player) {
-    char choice = 'n';
     bool isAI = false;
+    std::string str;
+    char ch;
+    bool validInput = false;
 
-    std::cout << "Is Player " << player << " the computer?" << std::endl;
-    std::cout << "\ty -> Yes" << std::endl;
-    std::cout << "\tn -> No" << std::endl;
-    std::cout << "\tSelection: ";
-    std::cin >> choice;
-    std::cout << std::endl;
+    do {
+        std::cout << "Is Player " << player << " the computer?" << std::endl;
+        std::cout << "\ty -> Yes" << std::endl;
+        std::cout << "\tn -> No" << std::endl;
+        std::cout << "\tSelection: ";
+        std::cin >> str;
+        std::istringstream iss(str);
+        iss >> ch;
 
-    if (choice == 'y') {
-        isAI = true;
-    }
-    else if (choice == 'n') {
-        isAI = false;
-    }
-
-    return isAI;
-}
-
-int promptAITimeLimit(int player) {
-    int limit = 0;
-
-    while (true) {
-        std::cout << "Enter time limit for player " << player
-            << " (seconds per move): ";
-        std::cin >> limit;
-        std::cout << std::endl;
-
-        if (limit <= 0) {
-            std::cout << "Non-positive integer input, please try again"
-                << std::endl;
+        if (ch == 'y') {
+            isAI = true;
+            validInput = true;
+        }
+        else if (ch == 'n') {
+            isAI = false;
+            validInput = true;
         }
         else {
-            break;
+            std::cout << "\tInvalid input, please try again" << std::endl;
+            std::cout << std::endl;
         }
     }
+    while (!validInput);
+    std::cout << std::endl;
+
+    return isAI; 
+}
+
+// Prompts user for a time limit for a computer/AI player
+int promptAITimeLimit(int player) {
+    int limit = 0;
+    std::string str;
+    bool validInput = false;
+
+    do {
+        std::cout << "Enter time limit for player " << player
+            << " (seconds per move): ";
+        std::cin >> str;
+        std::istringstream iss(str);
+        iss >> limit;
+
+        if (!iss.eof() || limit <= 0) {
+            std::cout << "Invalid input, please try again" << std::endl;
+            std::cout << std::endl;
+        }
+        else {
+            validInput = true;
+        }
+    }
+    while (!validInput);
+    std::cout << std::endl;
 
     return limit;
 }

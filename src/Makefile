@@ -4,7 +4,7 @@ CXX = g++
 CXXFLAGS = -std=c++11 -Wall -Wextra
 LDFLAGS =
 
-SOURCES = othello.cpp
+SOURCES = othello.cpp game.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 EXECUTABLE = othello.exe
 

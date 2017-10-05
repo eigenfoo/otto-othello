@@ -14,6 +14,7 @@ void othelloBoard::displayBoard(std::unordered_map<int, std::list<int>> moves,
     for (int i = 0; i < numSquares; i += height ) {
         // plain green square
         std::cout << row++ << "\033[48;5;34m\033[38;5;232m \033[0m";
+
         for (int j = i; j < i+width; j++) {
             if (this->positions[j] == 1) {
                 // white disc
@@ -36,6 +37,7 @@ void othelloBoard::displayBoard(std::unordered_map<int, std::list<int>> moves,
                 std::cout << "\033[48;5;34m\033[38;5;232m\u00B7 \033[0m";
             }
         }
+
         std::cout << std::endl;
     }
 }

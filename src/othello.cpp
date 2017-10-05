@@ -1,4 +1,3 @@
-#include <iostream>
 #include <sstream>
 #include "game.hpp"
 
@@ -6,7 +5,8 @@ bool promptAIPlayer(int player);
 int promptAITimeLimit(int player);
 
 int main() {
-    othelloGame game;
+    othelloBoard board;
+    othelloGame game(board);
     int timeLimit1 = 0;
     int timeLimit2 = 0;
     bool player1AI = false;

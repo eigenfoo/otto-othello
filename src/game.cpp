@@ -1,6 +1,6 @@
 #include "game.hpp"
 
-othelloGame::othelloGame() {
+othelloGame::othelloGame(othelloBoard board) {
 
 }
 

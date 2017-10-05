@@ -3,12 +3,13 @@
 
 #include <string>
 #include <fstream>
+#include "board.hpp"
 
 class othelloGame {
     public:
         bool gameOver = false;
 
-        othelloGame();
+        othelloGame(othelloBoard board);
 
         // Initialize board
         void newGame();

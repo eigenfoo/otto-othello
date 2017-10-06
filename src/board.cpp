@@ -5,8 +5,7 @@ othelloBoard::othelloBoard() {
     this->positions.resize(64, 0);
 }
 
-// Display board
-// color is 1 for black, 2 for black
+// Display board: color is 1 for black, 2 for white
 void othelloBoard::displayBoard(int color) {
     std::cout << "  A B C D E F G H" << std::endl;
     int row = 1;
@@ -41,15 +40,15 @@ void othelloBoard::displayBoard(int color) {
     }
 }
 
-// Display valid moves for player
-void othelloBoard::displayValidMoves() {
+// Display legal moves for player
+void othelloBoard::displayLegalMoves() {
     char colChar = 'A';
     char rowChar = '1';
     int moveNum = 1;
 
     for (auto keyval : this->moves) {
         index2coord(keyval.first, colChar, rowChar);
-        std::cout << "Valid move " << moveNum++ << ") "
+        std::cout << "Legal move " << moveNum++ << ") "
             << colChar << rowChar << " ";
 
         std::list<int> discsFlipped = keyval.second;
@@ -64,9 +63,29 @@ void othelloBoard::displayValidMoves() {
     }
 }
 
-// Finds all valid moves, returning a hash table with possible moves as keys,
+// Finds all legal moves, returning a hash table with possible moves as keys,
 // and a list of all pieces to be flipped as values.
-void othelloBoard::findValidMoves() {
+void othelloBoard::findLegalMoves(int color) {
+    const std::vector<int> directions = {-1, 1, -8, 8, -7, 7, -9, 9};
+    int oppColor = (color == 1) ? 2 : 1;
+
+    for (int i = 0; i < 64; i++) {
+        if (this->positions[i] == 0 || this->positions[i] == oppColor) {
+            continue;
+        }
+        else if (positions[i] == color) {
+
+        }
+        else {
+            std::cout << "ERROR, WE SHOULD NEVER GET HERE!!!" << std::endl;
+            return;
+        }
+    }
+}
+
+// Helper function to find a legal move given a disc and its color and a
+// direction
+void othelloBoard::findLegalMoveInDirection(int disc, int color, int direction) {
 
 }
 

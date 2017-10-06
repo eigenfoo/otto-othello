@@ -25,12 +25,16 @@ class othelloBoard {
         // Display board
         void displayBoard(int color);
 
-        // Display valid moves for player
-        void displayValidMoves();
+        // Display legal moves for player
+        void displayLegalMoves();
 
-        // Finds all valid moves, returning a hash table with possible moves as
+        // Finds all legal moves, returning a hash table with possible moves as
         // keys, and a list of all pieces to be flipped as values.
-        void findValidMoves();
+        void findLegalMoves(int color);
+
+        // Helper function to find a legal move given a disc and its color and a
+        // direction
+        void findLegalMoveInDirection(int disc, int color, int direction);
 
         // Update board after a move
         void updateBoard();

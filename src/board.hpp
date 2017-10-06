@@ -9,29 +9,34 @@
 
 class othelloBoard {
     public:
+        // positions specifies all pieces on the board. Squares on the board
+        // are indexed from 0 to 63, left to right, top to bottom.
+        // positions[i] is 1 for a black disc, 2 for a white disc
         std::vector<int> positions;
+
+        // moves is a hash table specifying all possible moves from the current
+        // board position. Possible moves are keys, and a list of all pieces to
+        // be flipped are values.
+        std::unordered_map<int, std::list<int>> moves;
 
         // Constructor
         othelloBoard();
 
         // Display board
-        void displayBoard(std::unordered_map<int, std::list<int>> moves,
-                int player);
+        void displayBoard(int color);
 
         // Display valid moves for player
-        void displayValidMoves(std::unordered_map<int, std::list<int>> moves);
+        void displayValidMoves();
 
-        // Find valid moves, returning them in a hash table with
-        // positions as keys, and a list of possible moves as values
-        std::unordered_map<int, std::list<int>> findValidMoves();
+        // Finds all valid moves, returning a hash table with possible moves as
+        // keys, and a list of all pieces to be flipped as values.
+        void findValidMoves();
 
-        // Update positions after a move
-        void updatePositions();
+        // Update board after a move
+        void updateBoard();
 
-    private:
-        const static int width = 8;
-        const static int height = 8;
-        const static int numSquares = width*height;
+        // Helper function to convert board square index to coordinate strings
+        void index2coord(int index, char &colChar, char &rowChar);
 };
 
 #endif // BOARD_HPP

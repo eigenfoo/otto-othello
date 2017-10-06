@@ -2,13 +2,12 @@
 #include "game.hpp"
 
 bool promptAIPlayer(int player);
-int promptAITimeLimit(int player);
+float promptAITimeLimit();
 
 int main() {
     othelloBoard board;
-    othelloGame game(board);
-    int timeLimit1 = 0;
-    int timeLimit2 = 0;
+    othelloGame game;
+
     bool player1AI = false;
     bool player2AI = false;
 
@@ -39,13 +38,10 @@ int main() {
     // Initialize game appropriately
     if (choice == 1) {
         player1AI = promptAIPlayer(1);
-        if (player1AI) {
-            timeLimit1 = promptAITimeLimit(1);
-        }
-
         player2AI = promptAIPlayer(2);
-        if (player2AI) {
-            timeLimit2 = promptAITimeLimit(2);
+
+        if (player1AI || player2AI) {
+            game.timeLimit = promptAITimeLimit();
         }
 
         game.newGame();
@@ -58,7 +54,7 @@ int main() {
         game.loadGame(fileName);
     }
 
-    // FIXME main game logic goes here
+    // TODO main game logic goes here
 
     return 0;
 }
@@ -99,14 +95,13 @@ bool promptAIPlayer(int player) {
 }
 
 // Prompts user for a time limit for a computer/AI player
-int promptAITimeLimit(int player) {
-    int limit = 0;
+float promptAITimeLimit() {
+    float limit = 0;
     std::string str;
     bool validInput = false;
 
     do {
-        std::cout << "Enter time limit for player " << player
-            << " (seconds per move): ";
+        std::cout << "Enter time limit for computer (seconds per move): ";
         std::cin >> str;
         std::istringstream iss(str);
         iss >> limit;

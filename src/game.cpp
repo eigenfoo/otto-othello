@@ -5,7 +5,7 @@ othelloGame::othelloGame() {
 }
 
 // Initialize board
-void othelloGame::newGame() {
+void othelloGame::newGame(bool player1AI, bool player2AI, float timeLimit) {
     std::vector<int> setup(64, 0);
 
     setup[27] = 2;
@@ -14,10 +14,13 @@ void othelloGame::newGame() {
     setup[36] = 2;
 
     this->board.positions.swap(setup);
+    this->player1AI = player1AI;
+    this->player2AI = player2AI;
+    this->timeLimit = timeLimit;
 }
 
 // Load game from file
-void othelloGame::loadGame(std::string fileName) {
+void othelloGame::loadGame(std::string fileName, bool player1AI, bool player2AI) {
     std::ifstream ifs(fileName.c_str());
     
     if (!ifs.good()) {
@@ -74,6 +77,10 @@ void othelloGame::loadGame(std::string fileName) {
     // Load time limit
     std::getline(ifs, str);
     this->timeLimit = stof(str);
+
+    // Set player AIs
+    this->player1AI = player1AI;
+    this->player2AI = player2AI;
 
     ifs.close();
 }

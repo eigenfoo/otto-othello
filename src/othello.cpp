@@ -1,6 +1,5 @@
 // TODO player 1 is black, player 2 is white. The names are confusing...
 
-#include <sstream>
 #include "game.hpp"
 
 bool promptAIPlayer(int player);

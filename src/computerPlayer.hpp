@@ -1,6 +1,8 @@
 #ifndef COMPUTER_HPP
 #define COMPUTER_HPP
 
+#include "board.hpp"
+
 class computerPlayer {
     public:
         void computerMove();

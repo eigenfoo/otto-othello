@@ -6,6 +6,7 @@
 #include <list>
 #include <tuple>
 #include <unordered_map>
+#include <sstream> // Needed for humanPlayer and computerPlayer
 
 class othelloBoard {
     public:

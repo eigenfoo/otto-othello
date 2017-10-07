@@ -3,6 +3,8 @@
 
 #include <string>
 #include <fstream>
+#include "computerPlayer.hpp"
+#include "humanPlayer.hpp"
 #include "board.hpp"
 
 class othelloGame {

@@ -65,7 +65,7 @@ int main() {
     return 0;
 }
 
-// Prompts user if player n is the computer/AI
+// Prompts user if black/white is the computer
 bool promptAIPlayer(int player) {
     bool isAI = false;
     std::string str;
@@ -73,7 +73,7 @@ bool promptAIPlayer(int player) {
     bool validInput = false;
 
     do {
-        std::cout << "Is Player " << player << " the computer?" << std::endl;
+        std::cout << "Is " << ((player == 1) ? "black" : "white") << " the computer?" << std::endl;
         std::cout << "\ty -> Yes" << std::endl;
         std::cout << "\tn -> No" << std::endl;
         std::cout << "\tSelection: ";

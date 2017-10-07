@@ -15,6 +15,7 @@ void othelloGame::newGame(bool blackComputer, bool whiteComputer, float timeLimi
     setup[36] = 2;
 
     this->board.positions.swap(setup);
+    this->toMove = 1;
     this->blackComputer = blackComputer;
     this->whiteComputer = whiteComputer;
     this->timeLimit = timeLimit;
@@ -65,23 +66,23 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer, bool whiteC
     std::getline(ifs, str);
     ch = str[0];
     if (ch == '1') {
-        this->movesFirst = 1;
+        this->toMove = 1;
     }
     else if (ch == '2') {
-        this->movesFirst = 2;
+        this->toMove = 2;
     }
     else {
         std::cout << "Player to move must be 1 (black) or 2 (white)" << std::endl;
         return;
     }
     
+    // Set computer players
+    this->blackComputer = blackComputer;
+    this->whiteComputer = whiteComputer;
+
     // Load time limit
     std::getline(ifs, str);
     this->timeLimit = stof(str);
-
-    // Set player AIs
-    this->blackComputer = blackComputer;
-    this->whiteComputer = whiteComputer;
 
     ifs.close();
 }

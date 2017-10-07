@@ -3,16 +3,18 @@
 
 #include <string>
 #include <fstream>
-#include "computerPlayer.hpp"
-#include "humanPlayer.hpp"
+#include "player.hpp"
 #include "board.hpp"
 
 class othelloGame {
     public:
         othelloBoard board;
-        int movesFirst = 1;
+
+        int toMove = 1;
         bool blackComputer = false, whiteComputer = false;
         float timeLimit = 0.0;
+
+        int plies = 0;
         bool gameOver = false;
         bool pass[2] = {false, false};
 

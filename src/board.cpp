@@ -52,14 +52,14 @@ void othelloBoard::displayLegalMoves() {
     for (auto keyval : this->moves) {
         index2coord(keyval.first, colNum, rowNum);
         std::cout << "Legal move " << moveNum++ << ") "
-            << colCoord[colNum] << rowCoord[colNum] << " " << keyval.first;
+            << colCoord[colNum] << rowCoord[rowNum];
 
         flippedDiscs = keyval.second;
-        std::cout << " will flip discs: ";
+        std::cout << " will flip: ";
 
         for (int disc : flippedDiscs) {
             index2coord(disc, colNum, rowNum);
-            std::cout << colCoord[colNum] << rowCoord[rowNum] << " " << std::endl;
+            std::cout << colCoord[colNum] << rowCoord[rowNum] << " ";
         }
 
         std::cout << std::endl;
@@ -98,10 +98,9 @@ void othelloBoard::findLegalMoveInDirection(int &disc, int &color,
     int oppColor = (color == 1) ? 2 : 1;
     int row1 = 0, col1 = 0, row2 = 0, col2 = 0;
 
-    std::cout << "Trying " << disc << " " << direction << std::endl;
-    for (int i = disc + direction; i < 64 || i > -1; i += direction) {
+    for (int i = disc + direction; i < 64 && i > -1; i += direction) {
         // Guard against wrapping around the board
-        index2coord(disc, col1, row1);
+        index2coord(i-direction, col1, row1);
         index2coord(i, col2, row2);
         if (abs(col1 - col2) > 1 || abs(row1 - row2) > 1) {
             break;
@@ -109,21 +108,19 @@ void othelloBoard::findLegalMoveInDirection(int &disc, int &color,
 
         // Keep moving in given direction, remembering any discs of the
         // opposite color. Break if we see any discs of our color.
-        currentSquare = this->positions[i];
-        if (currentSquare == color) {
-            std::cout << "Same color" << std::endl;
-            break;
-        }
-        else if (currentSquare == oppColor) {
-            std::cout << "Pushing to flippedDiscs" << std::endl;
-            flippedDiscs.push_front(i);
-            continue;
-        }
         // If we see an empty square, it is a valid move: insert it into the
         // moves hash table. Second condition is to resolve edge case of
         // disc immediately adjacent to original disc.
-        else if (currentSquare == 0) { //&& this->positions[i - direction] == oppColor) {
-            std::cout << "Legal move found! " << i << std::endl;
+        currentSquare = this->positions[i];
+        if (currentSquare == color ||
+                (currentSquare == 0 && this->positions[i-direction] == color)) {
+            break;
+        }
+        if (currentSquare == oppColor) {
+            flippedDiscs.push_front(i);
+            continue;
+        }
+        if (currentSquare == 0 && this->positions[i-direction] == oppColor) {
             if (this->moves.find(i) != this->moves.end()) {
                 this->moves.erase(i);
             }

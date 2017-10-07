@@ -60,6 +60,7 @@ int main() {
         game.loadGame(fileName, blackComputer, whiteComputer);
     }
 
+    game.board.displayBoard(1);
     // TODO main game logic goes here
 
     return 0;

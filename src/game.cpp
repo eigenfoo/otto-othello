@@ -1,5 +1,6 @@
 #include "game.hpp"
 
+// Constructor
 othelloGame::othelloGame() {
     this->board.positions.resize(64, 0);
 }

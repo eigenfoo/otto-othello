@@ -7,31 +7,32 @@ othelloBoard::othelloBoard() {
 
 // Display board: color is 1 for black, 2 for white
 void othelloBoard::displayBoard(int color) {
-    std::cout << "  A B C D E F G H" << std::endl;
+    std::cout << "    A B C D E F G H" << std::endl;
     int row = 1;
     for (int i = 0; i < 64; i += 8) {
         // Plain green square
-        std::cout << row++ << "\033[48;5;34m\033[38;5;232m \033[0m";
+        std::cout << " " << row++ << " "
+            << "\033[48;5;34m\033[38;5;232m \033[0m";
 
         for (int j = i; j < i+8; j++) {
             if (this->positions[j] == 1) {
                 // Black disc
-                std::cout << "\033[48;5;34m\033[38;5;232m\u25CF\033[0m";
+                std::cout << "\033[48;5;34m\033[38;5;232m\u2022 \033[0m";
             }
             else if (this->positions[j] == 2) {
                 // White disc
-                std::cout << "\033[48;5;34m\033[38;5;256m\u25CF\033[0m";
+                std::cout << "\033[48;5;34m\033[38;5;256m\u2022 \033[0m";
             }
             else if (this->moves.find(j) != this->moves.end() && color == 1) {
                 // Black x
-                std::cout << "\033[48;5;34m\033[38;5;232m\u2613\033[0m";
+                std::cout << "\033[48;5;34m\033[38;5;232m\u2613 \033[0m";
             } 
             else if (this->moves.find(j) != this->moves.end() && color == 2) {
                 // White x
-                std::cout << "\033[48;5;34m\033[38;5;256m\u2613\033[0m";
+                std::cout << "\033[48;5;34m\033[38;5;256m\u2613 \033[0m";
             }
             else {
-                // Plain green square
+                // Dot
                 std::cout << "\033[48;5;34m\033[38;5;232m\u00B7 \033[0m";
             }
         }

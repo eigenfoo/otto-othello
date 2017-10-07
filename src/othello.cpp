@@ -1,5 +1,8 @@
 #include "game.hpp"
 
+int promptNewGame();
+void initializeGame(int choice, othelloGame &game,
+        bool &blackComputer, bool &whiteComputer, float &timeLimit);
 bool promptAIPlayer(int player);
 float promptAITimeLimit();
 
@@ -9,8 +12,30 @@ int main() {
     bool blackComputer = false, whiteComputer = false;
     float timeLimit = 0.0;
 
-    // Prompt user for new or loaded game
+    // Initialize game, prompting user appropriately
+    int newGame = promptNewGame();
+    initializeGame(newGame, game, blackComputer, whiteComputer, timeLimit);
+
+    // Play game
+    while (!game.gameOver) {
+        game.board.findLegalMoves(1);
+        game.board.displayBoard(1);
+        game.board.displayLegalMoves();
+        game.move(1);
+
+        game.board.findLegalMoves(2);
+        game.board.displayBoard(2);
+        game.board.displayLegalMoves();
+        game.move(2);
+    }
+
+    return 0;
+}
+
+// Prompt user for new or loaded game
+int promptNewGame() {
     int choice = 0;
+
     std::string str;
     bool validInput = false;
     do {
@@ -33,7 +58,12 @@ int main() {
     while (!validInput);
     std::cout << std::endl;
 
-    // Initialize game appropriately
+    return choice;
+}
+
+// Initialize game appropriately
+void initializeGame(int choice, othelloGame &game,
+        bool &blackComputer, bool &whiteComputer, float &timeLimit) {
     if (choice == 1) {
         blackComputer = promptAIPlayer(1);
         whiteComputer = promptAIPlayer(2);
@@ -59,13 +89,6 @@ int main() {
 
         game.loadGame(fileName, blackComputer, whiteComputer);
     }
-
-    game.board.findLegalMoves(1);
-    game.board.displayBoard(1);
-    game.board.displayLegalMoves();
-    // TODO main game logic goes here
-
-    return 0;
 }
 
 // Prompts user if black/white is the computer

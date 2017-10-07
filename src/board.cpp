@@ -134,8 +134,14 @@ void othelloBoard::findLegalMoveInDirection(int &disc, int &color,
 }
 
 // Update positions after a move
-void othelloBoard::updateBoard() {
+void othelloBoard::updateBoard(int color, std::pair<int, std::list<int>> move) {
+    int square = move.first;
+    std::list<int> flippedDiscs = move.second;
 
+    this->positions[square] = color;
+    for (auto disc : flippedDiscs) {
+        this->positions[disc] = color;
+    }
 }
 
 // Helper function to convert board square index to coordinates

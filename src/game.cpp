@@ -5,26 +5,33 @@ othelloGame::othelloGame() {
     this->board.positions.resize(64, 0);
 }
 
-// Initialize board
+// Initialize new game
 void othelloGame::newGame(bool blackComputer, bool whiteComputer, float timeLimit) {
+    // Initialize board
     std::vector<int> setup(64, 0);
-
     setup[27] = 2;
     setup[28] = 1;
     setup[35] = 1;
     setup[36] = 2;
-
     this->board.positions.swap(setup);
+
+    // Initialize players
+    this->blackPlayer.color = 1;
+    this->blackPlayer.computer = (blackComputer ? true : false);
+    this->whitePlayer.color = 2;
+    this->whitePlayer.computer = (whiteComputer ? true : false);
+
+    // Initialize player to move
     this->toMove = 1;
-    this->blackComputer = blackComputer;
-    this->whiteComputer = whiteComputer;
+
+    // Initialize time limit
     this->timeLimit = timeLimit;
 }
 
 // Load game from file
 void othelloGame::loadGame(std::string fileName, bool blackComputer, bool whiteComputer) {
     std::ifstream ifs(fileName.c_str());
-    
+
     if (!ifs.good()) {
         std::cout << "File does not exist" << std::endl;
         return;
@@ -38,7 +45,6 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer, bool whiteC
 
     for (int i = 0; i < 8; i++) {
         std::getline(ifs, str);
-
         for (int j = 0; j < 16; j += 2) {
             ch = str[j];
             if (ch == '1') {
@@ -62,6 +68,13 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer, bool whiteC
     }
     this->board.positions.swap(setup);
 
+    // Initialize players
+    this->blackPlayer.color = 1;
+    this->blackPlayer.computer = (blackComputer ? true : false);
+    this->whitePlayer.color = 2;
+    this->whitePlayer.computer = (whiteComputer ? true : false);
+
+    // TODO what if the last 2 lines are missing??
     // Load player to move
     std::getline(ifs, str);
     ch = str[0];
@@ -75,10 +88,6 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer, bool whiteC
         std::cout << "Player to move must be 1 (black) or 2 (white)" << std::endl;
         return;
     }
-    
-    // Set computer players
-    this->blackComputer = blackComputer;
-    this->whiteComputer = whiteComputer;
 
     // Load time limit
     std::getline(ifs, str);
@@ -88,8 +97,33 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer, bool whiteC
 }
 
 // Make a move
-void othelloGame::move() {
+// TODO make player::move take a REFERENCE to moves for memory efficiency??
+void othelloGame::move(int color) {
+    std::pair<int, std::list<int>> move;
 
+    if (this->board.moves.empty()) {
+        std::cout << "No legal moves. Passing..." << std::endl;
+        this->passes[color] = true;
+
+        if (passes[0] && passes[1]) {
+            std::cout << "Game over: neither player has any legal moves" << std::endl;
+            this->gameOver = true;
+            // TODO figure out how game over works...
+        }
+    }
+
+    if (color == 1) {
+        std::cout << "Black to move" << std::endl;
+        move = this->blackPlayer.move(this->board.moves);
+    } 
+    else if (color == 2) {
+        std::cout << "White to move" << std::endl;
+        move = this->whitePlayer.move(this->board.moves);
+    }
+
+    this->board.updateBoard(color, move);
+
+    this->plies++;
 }
 
 // Update status of the game

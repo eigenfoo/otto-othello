@@ -38,7 +38,7 @@ class othelloBoard {
         void findLegalMoveInDirection(int &disc, int &color, int direction);
 
         // Update board after a move
-        void updateBoard();
+        void updateBoard(int color, std::pair<int, std::list<int>> move);
 
         // Helper function to convert board square index to coordinate
         // strings

@@ -1,18 +1,29 @@
 #include "player.hpp"
 
-player::player(int color, bool computer) {
-    this->color = color;
-    this->computer = computer;
+// Driver for player's move, regardless of player
+std::pair<int, std::list<int>> othelloPlayer::move(
+        std::unordered_map<int, std::list<int>> legalMoves) {
+
+    std::pair<int, std::list<int>> moveChoice;
+    if (this->computer) {
+        moveChoice = this->computerMove(legalMoves);
+    }
+    else {
+        moveChoice = this->humanMove(legalMoves);
+    }
+
+    return moveChoice;
 }
 
-std::pair<int, std::list<int>> player::humanMove(
+// Prompts user for next move
+std::pair<int, std::list<int>> othelloPlayer::humanMove(
         std::unordered_map<int, std::list<int>> legalMoves) {
     std::string str;
     int choice = 0;
     bool validInput = false;
 
     do {
-        std::cout << "Select move: ";
+        std::cout << "\tSelect move number: ";
         std::cin >> str;
         std::istringstream iss(str);
         iss >> choice;
@@ -24,7 +35,6 @@ std::pair<int, std::list<int>> player::humanMove(
         else {
             validInput = true;
         }
-
         std::cout << std::endl;
     }
     while (!validInput);
@@ -42,19 +52,27 @@ std::pair<int, std::list<int>> player::humanMove(
     return move;
 }
 
-std::pair<int, std::list<int>> player::computerMove(
+// Performs minimax search with alpha-beta pruning
+std::pair<int, std::list<int>> othelloPlayer::computerMove(
         std::unordered_map<int, std::list<int>> legalMoves) {
 
+    // Just takes first move... for now.
+    std::pair<int, std::list<int>> randMove;
+    for (auto kv : legalMoves) {
+        randMove = kv;
+        break;
+    }
+    return randMove;
 }
 
-int player::minimax() {
+int othelloPlayer::minimax() {
     return 0;
 }
 
-int player::maxValue() {
+int othelloPlayer::maxValue() {
     return 0;
 }
 
-int player::minValue() {
+int othelloPlayer::minValue() {
     return 0;
 }

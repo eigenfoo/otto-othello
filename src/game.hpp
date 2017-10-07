@@ -9,14 +9,15 @@
 class othelloGame {
     public:
         othelloBoard board;
+        othelloPlayer blackPlayer;
+        othelloPlayer whitePlayer;
 
         int toMove = 1;
-        bool blackComputer = false, whiteComputer = false;
         float timeLimit = 0.0;
 
         int plies = 0;
         bool gameOver = false;
-        bool pass[2] = {false, false};
+        bool passes[2] = {false, false};
 
         // Constructor
         othelloGame();
@@ -30,8 +31,8 @@ class othelloGame {
         // and clock time limit for the AI, respectively.
         void loadGame(std::string fileName, bool blackComputer, bool whiteComputer);
 
-        // Moke a move
-        void move();
+        // Make a move
+        void move(int color);
 
         // Update status of the game
         void updateStatus();

@@ -26,8 +26,8 @@ int main() {
             validInput = true;
         }
         else {
-            std::cout << "\tInvalid input, please try again" << std::endl;
-            std::cout << std::endl;
+            std::cout << "\tInvalid input, please try again" << std::endl
+                << std::endl;
         }
     }
     while (!validInput);
@@ -90,8 +90,8 @@ bool promptAIPlayer(int player) {
             validInput = true;
         }
         else {
-            std::cout << "\tInvalid input, please try again" << std::endl;
-            std::cout << std::endl;
+            std::cout << "\tInvalid input, please try again" << std::endl
+                << std::endl;
         }
     }
     while (!validInput);
@@ -113,8 +113,8 @@ float promptAITimeLimit() {
         iss >> limit;
 
         if (!iss.eof() || limit <= 0) {
-            std::cout << "Invalid input, please try again" << std::endl;
-            std::cout << std::endl;
+            std::cout << "Invalid input, please try again" << std::endl
+                << std::endl;
         }
         else {
             validInput = true;

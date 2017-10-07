@@ -35,8 +35,7 @@ class othelloBoard {
 
         // Helper function to find a legal move given a disc, its color and a direction.
         // Stores legal move and flipped discs as a pair in the moves hash table.
-        void findLegalMoveInDirection(int &disc, int &color, int direction,
-                std::unordered_map<int, std::list<int>> &moves);
+        void findLegalMoveInDirection(int &disc, int &color, int direction);
 
         // Update board after a move
         void updateBoard();

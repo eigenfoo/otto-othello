@@ -60,7 +60,9 @@ int main() {
         game.loadGame(fileName, blackComputer, whiteComputer);
     }
 
+    game.board.findLegalMoves(1);
     game.board.displayBoard(1);
+    game.board.displayLegalMoves();
     // TODO main game logic goes here
 
     return 0;

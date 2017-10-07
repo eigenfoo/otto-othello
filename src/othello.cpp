@@ -1,5 +1,3 @@
-// TODO player 1 is black, player 2 is white. The names are confusing...
-
 #include "game.hpp"
 
 bool promptAIPlayer(int player);
@@ -8,7 +6,7 @@ float promptAITimeLimit();
 int main() {
     othelloBoard board;
     othelloGame game;
-    bool player1AI = false, player2AI = false;
+    bool blackComputer = false, whiteComputer = false;
     float timeLimit = 0.0;
 
     // Prompt user for new or loaded game
@@ -37,14 +35,14 @@ int main() {
 
     // Initialize game appropriately
     if (choice == 1) {
-        player1AI = promptAIPlayer(1);
-        player2AI = promptAIPlayer(2);
+        blackComputer = promptAIPlayer(1);
+        whiteComputer = promptAIPlayer(2);
 
-        if (player1AI || player2AI) {
+        if (blackComputer || whiteComputer) {
             timeLimit = promptAITimeLimit();
         }
 
-        game.newGame(player1AI, player2AI, timeLimit);
+        game.newGame(blackComputer, whiteComputer, timeLimit);
     }
     else {
         std::string fileName;
@@ -52,14 +50,14 @@ int main() {
         std::cin >> fileName;
         std::cout << std::endl;
 
-        player1AI = promptAIPlayer(1);
-        player2AI = promptAIPlayer(2);
+        blackComputer = promptAIPlayer(1);
+        whiteComputer = promptAIPlayer(2);
 
-        if (player1AI || player2AI) {
+        if (blackComputer || whiteComputer) {
             timeLimit = promptAITimeLimit();
         }
 
-        game.loadGame(fileName, player1AI, player2AI);
+        game.loadGame(fileName, blackComputer, whiteComputer);
     }
 
     // TODO main game logic goes here

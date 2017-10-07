@@ -5,7 +5,7 @@ othelloGame::othelloGame() {
 }
 
 // Initialize board
-void othelloGame::newGame(bool player1AI, bool player2AI, float timeLimit) {
+void othelloGame::newGame(bool blackComputer, bool whiteComputer, float timeLimit) {
     std::vector<int> setup(64, 0);
 
     setup[27] = 2;
@@ -14,17 +14,17 @@ void othelloGame::newGame(bool player1AI, bool player2AI, float timeLimit) {
     setup[36] = 2;
 
     this->board.positions.swap(setup);
-    this->player1AI = player1AI;
-    this->player2AI = player2AI;
+    this->blackComputer = blackComputer;
+    this->whiteComputer = whiteComputer;
     this->timeLimit = timeLimit;
 }
 
 // Load game from file
-void othelloGame::loadGame(std::string fileName, bool player1AI, bool player2AI) {
+void othelloGame::loadGame(std::string fileName, bool blackComputer, bool whiteComputer) {
     std::ifstream ifs(fileName.c_str());
     
     if (!ifs.good()) {
-        std::cout << "File does not exist!" << std::endl;
+        std::cout << "File does not exist" << std::endl;
         return;
     }
 
@@ -50,7 +50,7 @@ void othelloGame::loadGame(std::string fileName, bool player1AI, bool player2AI)
             }
             else {
                 std::string msg = "Board must be 0, 1, 2 for empty, black and "
-                    "white, separated by spaces!";
+                    "white, separated by spaces";
                 std::cout << msg << std::endl;
                 return;
             }
@@ -70,7 +70,7 @@ void othelloGame::loadGame(std::string fileName, bool player1AI, bool player2AI)
         this->movesFirst = 2;
     }
     else {
-        std::cout << "Player to move must be 1 (black) or 2 (white)!" << std::endl;
+        std::cout << "Player to move must be 1 (black) or 2 (white)" << std::endl;
         return;
     }
     
@@ -79,8 +79,8 @@ void othelloGame::loadGame(std::string fileName, bool player1AI, bool player2AI)
     this->timeLimit = stof(str);
 
     // Set player AIs
-    this->player1AI = player1AI;
-    this->player2AI = player2AI;
+    this->blackComputer = blackComputer;
+    this->whiteComputer = whiteComputer;
 
     ifs.close();
 }

@@ -29,7 +29,7 @@ manually using your preferred C++ compiler.
 ### Save Files
   - There is the option to load a saved board at the start of a game.
   - The first 8 rows of the save file represent the state of the board.
-    - _Spacing is important_ : each line must begin with a space, each
+    - _Spacing is important_: each line must begin with a space, each
     number must be separated by a single space, and there must not be any
     trailing spaces.
   - 0, 1, and 2 represent an emtpy square, a black disc, and a white disc,

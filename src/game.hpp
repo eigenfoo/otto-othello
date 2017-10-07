@@ -11,7 +11,7 @@ class othelloGame {
     public:
         othelloBoard board;
         int movesFirst = 1;
-        bool player1AI = false, player2AI = false;
+        bool blackComputer = false, whiteComputer = false;
         float timeLimit = 0.0;
         bool gameOver = false;
         bool pass[2] = {false, false};
@@ -20,13 +20,13 @@ class othelloGame {
         othelloGame();
 
         // Initialize board
-        void newGame(bool player1AI, bool player2AI, float timeLimit);
+        void newGame(bool blackComputer, bool whiteComputer, float timeLimit);
 
         // Load game from file
         // 0, 1, 2 for an empty square, a white disc, and a black disc, resp.
         // Last two lines give the player to move (1 for black, 2 for white)
         // and clock time limit for the AI, respectively.
-        void loadGame(std::string fileName, bool player1AI, bool player2AI);
+        void loadGame(std::string fileName, bool blackComputer, bool whiteComputer);
 
         // Moke a move
         void move();

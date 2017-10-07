@@ -57,6 +57,8 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(
         std::unordered_map<int, std::list<int>> legalMoves) {
 
     // Just takes first move... for now.
+    std::cout << "Computer makes random move..." << std::endl;
+
     std::pair<int, std::list<int>> randMove;
     for (auto kv : legalMoves) {
         randMove = kv;

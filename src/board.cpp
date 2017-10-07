@@ -39,9 +39,12 @@ void othelloBoard::displayBoard(int color) {
 
         std::cout << std::endl;
     }
+
+    std::cout << std::endl;
 }
 
 // Display legal moves for player
+// FIXME program displaying legal moves from ALL previous turns...
 void othelloBoard::displayLegalMoves() {
     std::string colCoord = "ABCDEFGH";
     std::string rowCoord = "12345678";
@@ -64,6 +67,8 @@ void othelloBoard::displayLegalMoves() {
 
         std::cout << std::endl;
     }
+
+    std::cout << std::endl;
 }
 
 // Finds all legal moves, returning a hash table with possible moves as keys,

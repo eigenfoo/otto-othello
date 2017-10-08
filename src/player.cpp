@@ -39,7 +39,6 @@ std::pair<int, std::list<int>> othelloPlayer::humanMove(
     do {
         std::cout << "\tSelect move number: ";
         std::cin >> str;
-        std::cout << std::endl;
         std::istringstream iss(str);
         iss >> choice;
 
@@ -48,6 +47,7 @@ std::pair<int, std::list<int>> othelloPlayer::humanMove(
         }
         else {
             validInput = true;
+            std::cout << std::endl;
         }
     }
     while (!validInput);

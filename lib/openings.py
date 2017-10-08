@@ -1,4 +1,11 @@
+'''
+Script to convert Othello openings catalog from
+http://www.othello.nl/content/anim/openings.txt
+to a .csv file, to be used as an openings book.
+'''
+
 import subprocess
+
 
 def make_index(string, t3=False):
     index = ''

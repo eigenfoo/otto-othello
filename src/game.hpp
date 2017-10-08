@@ -35,7 +35,7 @@ class othelloGame {
         void move(int color);
 
         // Update status of the game
-        void updateStatus();
+        void checkGameOver();
 };
 
 #endif // GAME_HPP

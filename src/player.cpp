@@ -2,14 +2,15 @@
 
 // Driver for player's move, regardless of player
 std::pair<int, std::list<int>> othelloPlayer::move(
-        const std::unordered_map<int, std::list<int>> &legalMoves) {
+        const std::unordered_map<int, std::list<int>> &legalMoves,
+        bool &pass) {
 
     std::pair<int, std::list<int>> moveChoice;
     if (this->computer) {
-        moveChoice = this->computerMove(legalMoves);
+        moveChoice = this->computerMove(legalMoves, pass);
     }
     else {
-        moveChoice = this->humanMove(legalMoves);
+        moveChoice = this->humanMove(legalMoves, pass);
     }
 
     return moveChoice;
@@ -17,20 +18,33 @@ std::pair<int, std::list<int>> othelloPlayer::move(
 
 // Prompts user for next move
 std::pair<int, std::list<int>> othelloPlayer::humanMove(
-        const std::unordered_map<int, std::list<int>> &legalMoves) {
+        const std::unordered_map<int, std::list<int>> &legalMoves,
+        bool &pass) {
+
     std::string str;
+    std::pair<int, std::list<int>> move;
     int choice = 0;
     bool validInput = false;
+    int i = 0;
+
+    if (legalMoves.empty()) {
+        std::cout << "No legal moves!" << std::endl;
+        std::cout << "\tEnter any string to pass: ";
+        std::cin >> str;
+        std::cout << std::endl;
+        pass = true;
+        return move;
+    }
 
     do {
         std::cout << "\tSelect move number: ";
         std::cin >> str;
+        std::cout << std::endl;
         std::istringstream iss(str);
         iss >> choice;
 
         if (!iss.eof() || choice > legalMoves.size() || choice < 1) {
-            std::cout << "\tInvalid input, please try again" << std::endl
-                << std::endl;
+            std::cout << "\tInvalid input. Please try again.\n" << std::endl;
         }
         else {
             validInput = true;
@@ -38,10 +52,8 @@ std::pair<int, std::list<int>> othelloPlayer::humanMove(
     }
     while (!validInput);
 
-    int i = 0;
-    std::pair<int, std::list<int>> move;
-    for (std::pair<int, std::list<int>> kv : legalMoves) {
-        move = kv;
+    for (std::pair<int, std::list<int>> keyval : legalMoves) {
+        move = keyval;
         i++;
         if (i == choice) {
             break;
@@ -53,17 +65,25 @@ std::pair<int, std::list<int>> othelloPlayer::humanMove(
 
 // Performs minimax search with alpha-beta pruning
 std::pair<int, std::list<int>> othelloPlayer::computerMove(
-        const std::unordered_map<int, std::list<int>> &legalMoves) {
+        const std::unordered_map<int, std::list<int>> &legalMoves,
+        bool &pass) {
+    std::pair<int, std::list<int>> move;
 
-    // Just takes first move... for now.
-    std::cout << "Computer makes random move..." << std::endl;
+    if (legalMoves.empty()) {
+        std::cout << "No legal moves!" << std::endl;
+        std::cout << "\tComputer passes." << std::endl << std::endl;
+        pass = true;
+        return move;
+    }
 
-    std::pair<int, std::list<int>> randMove;
-    for (auto kv : legalMoves) {
-        randMove = kv;
+    // FIXME just takes first move... for now.
+    std::cout << "\tComputer makes random move..." << std::endl << std::endl;
+
+    for (auto keyval : legalMoves) {
+        move = keyval;
         break;
     }
-    return randMove;
+    return move;
 }
 
 int othelloPlayer::minimax() {

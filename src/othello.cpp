@@ -16,6 +16,8 @@ int main() {
     int newGame = promptNewGame();
     initializeGame(newGame, game, blackComputer, whiteComputer, timeLimit);
 
+    // FIXME what if white moves first??
+
     // Play game
     while (!game.gameOver) {
         game.board.findLegalMoves(1);
@@ -27,6 +29,8 @@ int main() {
         game.board.displayBoard(2);
         game.board.displayLegalMoves();
         game.move(2);
+
+        game.checkGameOver();
     }
 
     return 0;
@@ -39,9 +43,10 @@ int promptNewGame() {
     std::string str;
     bool validInput = false;
     do {
-        std::cout << "Load a game or start a new one?" << std::endl;
-        std::cout << "\t1 -> Start a new game" << std::endl;
-        std::cout << "\t2 -> Load a board from file" << std::endl;
+        std::cout << "Start a new game, or load a game from a save file?"
+            << std::endl;
+        std::cout << "\t1 -> Start" << std::endl;
+        std::cout << "\t2 -> Load" << std::endl;
         std::cout << "\tSelection: ";
         std::cin >> str;
         std::istringstream iss(str);
@@ -51,8 +56,7 @@ int promptNewGame() {
             validInput = true;
         }
         else {
-            std::cout << "\tInvalid input, please try again" << std::endl
-                << std::endl;
+            std::cout << "\tInvalid input. Please try again.\n" << std::endl;
         }
     }
     while (!validInput);
@@ -116,8 +120,7 @@ bool promptAIPlayer(int player) {
             validInput = true;
         }
         else {
-            std::cout << "\tInvalid input, please try again" << std::endl
-                << std::endl;
+            std::cout << "\tInvalid input. Please try again.\n" << std::endl;
         }
     }
     while (!validInput);
@@ -139,8 +142,7 @@ float promptAITimeLimit() {
         iss >> limit;
 
         if (!iss.eof() || limit <= 0) {
-            std::cout << "Invalid input, please try again" << std::endl
-                << std::endl;
+            std::cout << "Invalid input. Please try again.\n" << std::endl;
         }
         else {
             validInput = true;

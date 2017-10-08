@@ -6,7 +6,8 @@ othelloGame::othelloGame() {
 }
 
 // Initialize new game
-void othelloGame::newGame(bool blackComputer, bool whiteComputer, float timeLimit) {
+void othelloGame::newGame(bool blackComputer, bool whiteComputer,
+        float timeLimit) {
     // Initialize board
     std::vector<int> setup(64, 0);
     setup[27] = 2;
@@ -29,7 +30,8 @@ void othelloGame::newGame(bool blackComputer, bool whiteComputer, float timeLimi
 }
 
 // Load game from file
-void othelloGame::loadGame(std::string fileName, bool blackComputer, bool whiteComputer) {
+void othelloGame::loadGame(std::string fileName, bool blackComputer,
+        bool whiteComputer) {
     std::ifstream ifs(fileName.c_str());
 
     if (!ifs.good()) {
@@ -57,8 +59,8 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer, bool whiteC
                 setup[idx] = 0;
             }
             else {
-                std::string msg = "Board must be 0, 1, 2 for empty, black and "
-                    "white, separated by spaces";
+                std::string msg = "Board must be 0, 1, 2 for empty, "
+                    "black and white, separated by spaces";
                 std::cout << msg << std::endl;
                 return;
             }
@@ -84,13 +86,15 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer, bool whiteC
             this->toMove = 2;
         }
         else {
-            std::cout << "Player to move must be 1 (black) or 2 (white)" << std::endl;
+            std::cout << "Player to move must be 1 (black) or 2 (white)"
+                << std::endl;
             ifs.close();
             return;
         }
     }
     else {
-        std::cout << "Save file does not specify player to move" << std::endl;
+        std::cout << "Save file does not specify player to move"
+            << std::endl;
         ifs.close();
         return;
     }
@@ -101,13 +105,15 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer, bool whiteC
             this->timeLimit = stof(str);
         }
         else {
-            std::cout << "Time limit must be a positive number" << std::endl;
+            std::cout << "Time limit must be a positive number"
+                << std::endl;
             ifs.close();
             return;
         }
     }
     else {
-        std::cout << "Save file does not specify computer time limit" << std::endl;
+        std::cout << "Save file does not specify computer time limit"
+            << std::endl;
         ifs.close();
         return;
     }
@@ -119,32 +125,48 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer, bool whiteC
 void othelloGame::move(int color) {
     std::pair<int, std::list<int>> move;
 
-    if (this->board.moves.empty()) {
-        std::cout << "No legal moves. Passing..." << std::endl;
-        this->passes[color] = true;
-
-        if (passes[0] && passes[1]) {
-            std::cout << "Game over: neither player has any legal moves" << std::endl;
-            this->gameOver = true;
-            // TODO figure out how game over works...
-        }
-    }
-
     if (color == 1) {
         std::cout << "Black to move" << std::endl;
-        move = this->blackPlayer.move(this->board.moves);
+        move = this->blackPlayer.move(this->board.moves, this->passes[0]);
     } 
     else if (color == 2) {
         std::cout << "White to move" << std::endl;
-        move = this->whitePlayer.move(this->board.moves);
+        move = this->whitePlayer.move(this->board.moves, this->passes[1]);
     }
 
-    this->board.updateBoard(color, move);
-
-    this->plies++;
+    if (!this->passes[0] && !this->passes[1]) {
+        this->board.updateBoard(color, move);
+    }
 }
 
 // Update status of the game
-void othelloGame::updateStatus() {
+void othelloGame::checkGameOver() {
+    if (this->passes[0] && this->passes[1]) {
+        this->gameOver = true;
+        int blackCount = std::count(this->board.positions.begin(),
+                this->board.positions.end(), 1); 
+        int whiteCount = std::count(this->board.positions.begin(),
+                this->board.positions.end(), 2); 
 
+        if (blackCount > whiteCount) {
+            std::cout << "Black wins!" << std::endl;
+            std::cout << "Black: " << blackCount << "\t" 
+                << "White: " << whiteCount << std::endl;
+        }
+        else if (blackCount < whiteCount) {
+            std::cout << "White wins!" << std::endl;
+            std::cout << "Black: " << blackCount << "\t" 
+                << "White: " << whiteCount << std::endl;
+        }
+        else {
+            std::cout << "Tie!" << std::endl;
+            std::cout << "Black: " << blackCount << "\t" 
+                << "White: " << whiteCount << std::endl;
+        }
+    }
+    else {
+        this->passes[0] = false;
+        this->passes[1] = false;
+        this->plies++;
+    }
 }

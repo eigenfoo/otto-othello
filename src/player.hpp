@@ -10,15 +10,18 @@ class othelloPlayer {
 
         // Driver for moves, regardless of player
         std::pair<int, std::list<int>> move(
-                const std::unordered_map<int, std::list<int>> &legalMoves);
+                const std::unordered_map<int, std::list<int>> &legalMoves,
+                bool &pass);
 
         // Prompts user for next move
         std::pair<int, std::list<int>> humanMove(
-                const std::unordered_map<int, std::list<int>> &legalMoves);
+                const std::unordered_map<int, std::list<int>> &legalMoves,
+                bool &pass);
 
         // Performs minimax search with alpha-beta pruning
         std::pair<int, std::list<int>> computerMove(
-                const std::unordered_map<int, std::list<int>> &legalMoves);
+                const std::unordered_map<int, std::list<int>> &legalMoves,
+                bool &pass);
 
         int minimax();
         int maxValue();

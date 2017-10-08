@@ -74,30 +74,48 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer, bool whiteC
     this->whitePlayer.color = 2;
     this->whitePlayer.computer = (whiteComputer ? true : false);
 
-    // TODO what if the last 2 lines are missing??
     // Load player to move
-    std::getline(ifs, str);
-    ch = str[0];
-    if (ch == '1') {
-        this->toMove = 1;
-    }
-    else if (ch == '2') {
-        this->toMove = 2;
+    if (std::getline(ifs, str)) {
+        ch = str[0];
+        if (ch == '1') {
+            this->toMove = 1;
+        }
+        else if (ch == '2') {
+            this->toMove = 2;
+        }
+        else {
+            std::cout << "Player to move must be 1 (black) or 2 (white)" << std::endl;
+            ifs.close();
+            return;
+        }
     }
     else {
-        std::cout << "Player to move must be 1 (black) or 2 (white)" << std::endl;
+        std::cout << "Save file does not specify player to move" << std::endl;
+        ifs.close();
         return;
     }
 
     // Load time limit
-    std::getline(ifs, str);
-    this->timeLimit = stof(str);
+    if (std::getline(ifs, str)) {
+        if (stof(str) > 0) {
+            this->timeLimit = stof(str);
+        }
+        else {
+            std::cout << "Time limit must be a positive number" << std::endl;
+            ifs.close();
+            return;
+        }
+    }
+    else {
+        std::cout << "Save file does not specify computer time limit" << std::endl;
+        ifs.close();
+        return;
+    }
 
     ifs.close();
 }
 
 // Make a move
-// TODO make player::move take a REFERENCE to moves for memory efficiency??
 void othelloGame::move(int color) {
     std::pair<int, std::list<int>> move;
 

@@ -44,7 +44,6 @@ void othelloBoard::displayBoard(int color) {
 }
 
 // Display legal moves for player
-// FIXME program displaying legal moves from ALL previous turns...
 void othelloBoard::displayLegalMoves() {
     std::string colCoord = "ABCDEFGH";
     std::string rowCoord = "12345678";
@@ -74,6 +73,9 @@ void othelloBoard::displayLegalMoves() {
 // Finds all legal moves, returning a hash table with possible moves as keys,
 // and a list of all pieces to be flipped as values.
 void othelloBoard::findLegalMoves(int color) {
+    // Clear legal moves from previous ply
+    this->moves.clear();
+
     for (int i = 0; i < 64; i++) {
         if (this->positions[i] == color) {
             // Check rows
@@ -113,23 +115,19 @@ void othelloBoard::findLegalMoveInDirection(int &disc, int &color,
 
         // Keep moving in given direction, remembering any discs of the
         // opposite color. Break if we see any discs of our color.
-        // If we see an empty square, it is a valid move: insert it into the
-        // moves hash table. Second condition is to resolve edge case of
-        // disc immediately adjacent to original disc.
         currentSquare = this->positions[i];
         if (currentSquare == color ||
-                (currentSquare == 0 && this->positions[i-direction] == color)) {
+                (currentSquare == 0 && flippedDiscs.empty())) {
             break;
         }
-        if (currentSquare == oppColor) {
+        else if (currentSquare == oppColor) {
             flippedDiscs.push_front(i);
             continue;
         }
-        if (currentSquare == 0 && this->positions[i-direction] == oppColor) {
-            if (this->moves.find(i) != this->moves.end()) {
-                this->moves.erase(i);
-            }
-
+        // If we see an empty square, it is a valid move: insert it into the
+        // moves hash table. Second condition is to resolve edge case of
+        // disc immediately adjacent to original disc.
+        else if (currentSquare == 0 && !flippedDiscs.empty()) {
             legalMove.first = i;
             legalMove.second = flippedDiscs;
             this->moves.insert(legalMove);

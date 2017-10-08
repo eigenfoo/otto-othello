@@ -4,8 +4,6 @@ http://www.othello.nl/content/anim/openings.txt
 to a .csv file, to be used as an openings book.
 '''
 
-import subprocess
-
 
 def make_index(string, t3=False):
     index = ''
@@ -62,5 +60,3 @@ with open('openings.dat', 'r') as infile:
             outfile.write(make_index(splut[0]))
             if (splut[-1] == '(t3)'):
                 outfile.write(make_index(splut[0], True))
-
-subprocess.run(['sort', '-u', '-o', 'openings.csv', 'openings.csv'])

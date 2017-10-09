@@ -13,9 +13,9 @@ class othelloHeuristic {
         int evaluate(const othelloBoard &board, int &color);
 
     private:
-        int discDifference(const othelloBoard &board, int &color);
-        int mobility(const othelloBoard &board, int &color);
-        int stability(const othelloBoard &board, int &color);
+        int discDifference(const othelloBoard &board);
+        int mobility(const othelloBoard &board);
+        int stability(const othelloBoard &board);
         int parity(const othelloBoard &board, int &color);
 };
 

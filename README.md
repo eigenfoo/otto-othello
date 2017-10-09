@@ -1,7 +1,7 @@
-# Othello/Reversi Artificial Intelligence
+# Otto - an Othello AI!
 
-An Othello/Reversi game with an AI that searches the game tree using a minimax
-search with alpha-beta pruning.
+Otto is an Othello/Reversi game-playing artificial intelligence that implements
+a straightforward minimax search with alpha-beta pruning.
 
 ## Requirements
 * A terminal that supports
@@ -14,8 +14,8 @@ search with alpha-beta pruning.
 Using git:
 
 ```
-$ git clone https://github.com/eigenfoo/othello.git
-$ cd othello
+$ git clone https://github.com/eigenfoo/otto-othello.git
+$ cd otto-othello/src
 $ make
 $ make run
 ```

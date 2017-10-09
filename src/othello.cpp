@@ -16,7 +16,14 @@ int main() {
     int newGame = promptNewGame();
     initializeGame(newGame, game, blackComputer, whiteComputer, timeLimit);
 
-    // FIXME what if white moves first??
+    if (game.toMove == 2) {
+        game.board.findLegalMoves(2);
+        game.board.displayBoard(2);
+        game.board.displayLegalMoves();
+        game.move(2);
+
+        game.checkGameOver();
+    }
 
     // Play game
     while (!game.gameOver) {

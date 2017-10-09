@@ -141,12 +141,17 @@ void othelloGame::move(int color) {
 
 // Update status of the game
 void othelloGame::checkGameOver() {
-    if (this->passes[0] && this->passes[1]) {
+    auto begin = this->board.positions.begin();
+    auto end = this->board.positions.end();
+
+    if (find(begin, end, 0) == end || (this->passes[0] && this->passes[1])) {
         this->gameOver = true;
         int blackCount = std::count(this->board.positions.begin(),
                 this->board.positions.end(), 1); 
         int whiteCount = std::count(this->board.positions.begin(),
                 this->board.positions.end(), 2); 
+
+        this->board.displayBoard(1);
 
         if (blackCount > whiteCount) {
             std::cout << "Black wins!" << std::endl;

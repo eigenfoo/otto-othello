@@ -7,13 +7,10 @@ to a .csv file, to be used as an openings book.
 import subprocess
 
 
-def make_index(string, t3=False):
+def make_index(string):
     index = ''
     string = string.lower()
     moves = [string[i:i+2] for i in range(0, len(string), 2)]
-
-    if t3:
-        moves[0:3] = moves[0:3][::-1]
 
     for move in moves:
         if move[0] == 'a':
@@ -60,7 +57,5 @@ with open('openings.dat', 'r') as infile:
         for line in infile:
             splut = line.split()
             outfile.write(make_index(splut[0]))
-            if (splut[-1] == '(t3)'):
-                outfile.write(make_index(splut[0], True))
 
 subprocess.run(['sort', '-u', '-o', 'openings.csv', 'openings.csv'])

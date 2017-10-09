@@ -18,11 +18,12 @@ class othelloPlayer {
                 const std::unordered_map<int, std::list<int>> &legalMoves,
                 bool &pass);
 
-        // Performs minimax search with alpha-beta pruning
+        // Driver for the AI algorithm
         std::pair<int, std::list<int>> computerMove(
                 const std::unordered_map<int, std::list<int>> &legalMoves,
                 bool &pass);
 
+        // Performs minimax search with alpha-beta pruning
         int minimax();
         int maxValue();
         int minValue();

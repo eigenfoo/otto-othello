@@ -63,7 +63,7 @@ std::pair<int, std::list<int>> othelloPlayer::humanMove(
     return move;
 }
 
-// Performs minimax search with alpha-beta pruning
+// Driver for the AI algorithm
 std::pair<int, std::list<int>> othelloPlayer::computerMove(
         const std::unordered_map<int, std::list<int>> &legalMoves,
         bool &pass) {
@@ -83,9 +83,11 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(
         move = keyval;
         break;
     }
+
     return move;
 }
 
+// Performs minimax search with alpha-beta pruning
 int othelloPlayer::minimax() {
     return 0;
 }

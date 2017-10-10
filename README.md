@@ -17,7 +17,7 @@ Using git:
 $ git clone https://github.com/eigenfoo/otto-othello.git
 $ cd otto-othello/src
 $ make
-$ make run
+$ ./otto
 ```
 
 Alternatively, you can download the `.zip` file from

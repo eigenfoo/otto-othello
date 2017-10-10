@@ -1,5 +1,14 @@
 #include "heuristic.hpp"
 
+int othelloHeuristic::utility(const othelloBoard &board) {
+    int blackCount = std::count(board.positions.begin(),
+            board.positions.end(), 1); 
+    int whiteCount = std::count(board.positions.begin(),
+            board.positions.end(), 2); 
+
+    return blackCount - whiteCount;
+}
+
 int othelloHeuristic::evaluate(const othelloBoard &board, int &color) {
     return discDifference(board);
 }

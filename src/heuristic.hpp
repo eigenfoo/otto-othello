@@ -10,6 +10,7 @@
 
 class othelloHeuristic {
     public:
+        int utility(const othelloBoard &board);
         int evaluate(const othelloBoard &board, int &color);
 
     private:

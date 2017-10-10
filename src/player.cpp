@@ -77,7 +77,7 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(
     }
 
     // FIXME just takes first move... for now.
-    std::cout << "\tComputer makes random move..." << std::endl << std::endl;
+    std::cout << "\tSearching game tree..." << std::endl << std::endl;
 
     for (auto keyval : legalMoves) {
         move = keyval;

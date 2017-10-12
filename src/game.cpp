@@ -175,3 +175,7 @@ void othelloGame::checkGameOver() {
         this->plies++;
     }
 }
+
+bool terminalState(othelloGame &game, int &color) {
+    return false;
+}

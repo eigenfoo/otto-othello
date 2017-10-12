@@ -17,7 +17,7 @@ int main() {
     initializeGame(newGame, game, blackComputer, whiteComputer, timeLimit);
 
     if (game.toMove == 2) {
-        game.board.findLegalMoves(2);
+        game.board.findLegalMoves(2, &game.board.moves);
         game.board.displayBoard(2);
         game.board.displayLegalMoves();
         game.move(2);
@@ -27,12 +27,12 @@ int main() {
 
     // Play game
     while (!game.gameOver) {
-        game.board.findLegalMoves(1);
+        game.board.findLegalMoves(1, &game.board.moves);
         game.board.displayBoard(1);
         game.board.displayLegalMoves();
         game.move(1);
 
-        game.board.findLegalMoves(2);
+        game.board.findLegalMoves(2, &game.board.moves);
         game.board.displayBoard(2);
         game.board.displayLegalMoves();
         game.move(2);

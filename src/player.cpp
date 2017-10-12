@@ -76,9 +76,9 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(
         return move;
     }
 
-    // FIXME just takes first move... for now.
     std::cout << "\tSearching game tree..." << std::endl << std::endl;
 
+    // FIXME there has to be a better way to do this...
     for (auto keyval : legalMoves) {
         move = keyval;
         break;
@@ -88,14 +88,14 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(
 }
 
 // Performs minimax search with alpha-beta pruning
-int othelloPlayer::minimax() {
+int othelloPlayer::alphabeta(othelloBoard &board, bool maximizing) {
     return 0;
 }
 
-int othelloPlayer::maxValue() {
+int othelloPlayer::maxValue(othelloBoard &board, bool maximizing) {
     return 0;
 }
 
-int othelloPlayer::minValue() {
+int othelloPlayer::minValue(othelloBoard &board, bool maximizing) {
     return 0;
 }

@@ -29,17 +29,21 @@ class othelloBoard {
         // Display legal moves for player
         void displayLegalMoves();
 
-        // Finds all legal moves, returning a hash table with possible
-        // moves as keys, and a list of all pieces to be flipped as values.
-        void findLegalMoves(int color);
+        // Finds all legal moves, writing to a reference to a hash table with
+        // legal moves as keys, and a list of all discs to be flipped as values.
+        void findLegalMoves(int color,
+                std::unordered_map<int, std::list<int>> *pMoves);
 
         // Helper function to find a legal move given a disc, its color and a direction.
-        // Stores legal move and flipped discs as a pair in the moves hash table.
-        void findLegalMoveInDirection(int &disc, int &color, int direction);
+        // Writes the legal move and a list of all discs to be flipped as a pair to the
+        // reference to a hash table.
+        void findLegalMoveInDirection(int &disc, int &color, int direction,
+                std::unordered_map<int, std::list<int>> *pMoves);
 
         // Update board after a move
         void updateBoard(int color, std::pair<int, std::list<int>> move);
 
+    private: 
         // Helper function to convert board square index to coordinate
         // strings
         void index2coord(int index, int &colNum, int &rowNum);

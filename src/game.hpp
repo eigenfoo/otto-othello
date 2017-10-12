@@ -36,6 +36,8 @@ class othelloGame {
 
         // Update status of the game
         void checkGameOver();
+
+        bool terminalState(const othelloGame &game, int &color);
 };
 
 #endif // GAME_HPP

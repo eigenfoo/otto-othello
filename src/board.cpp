@@ -70,35 +70,37 @@ void othelloBoard::displayLegalMoves() {
     std::cout << std::endl;
 }
 
-// Finds all legal moves, returning a hash table with possible moves as keys,
-// and a list of all pieces to be flipped as values.
-void othelloBoard::findLegalMoves(int color) {
+// Finds all legal moves, writing to a reference to a hash table with
+// legal moves as keys, and a list of all discs to be flipped as values.
+void othelloBoard::findLegalMoves(int color,
+        std::unordered_map<int, std::list<int>> *pMoves) {
     // Clear legal moves from previous ply
     this->moves.clear();
 
     for (int i = 0; i < 64; i++) {
         if (this->positions[i] == color) {
             // Check rows
-            findLegalMoveInDirection(i, color, -1);
-            findLegalMoveInDirection(i, color, 1);
+            findLegalMoveInDirection(i, color, -1, pMoves);
+            findLegalMoveInDirection(i, color, 1, pMoves);
 
             // Check columns
-            findLegalMoveInDirection(i, color, -8);
-            findLegalMoveInDirection(i, color, 8);
+            findLegalMoveInDirection(i, color, -8, pMoves);
+            findLegalMoveInDirection(i, color, 8, pMoves);
 
             // Check diagonals
-            findLegalMoveInDirection(i, color, -9);
-            findLegalMoveInDirection(i, color, 9);
-            findLegalMoveInDirection(i, color, -7);
-            findLegalMoveInDirection(i, color, 7);
+            findLegalMoveInDirection(i, color, -9, pMoves);
+            findLegalMoveInDirection(i, color, 9, pMoves);
+            findLegalMoveInDirection(i, color, -7, pMoves);
+            findLegalMoveInDirection(i, color, 7, pMoves);
         }
     }
 }
 
 // Helper function to find a legal move given a disc, its color and a direction.
-// Stores legal move and flipped discs as a pair in the moves hash table.
-void othelloBoard::findLegalMoveInDirection(int &disc, int &color,
-        int direction) {
+// Writes the legal move and a list of all discs to be flipped as a pair to the
+// reference to a hash table.
+void othelloBoard::findLegalMoveInDirection(int &disc, int &color, int direction,
+        std::unordered_map<int, std::list<int>> *pMoves) {
     std::pair<int, std::list<int>> legalMove;
     std::list<int> flippedDiscs;
     int currentSquare = 0;
@@ -124,13 +126,13 @@ void othelloBoard::findLegalMoveInDirection(int &disc, int &color,
             flippedDiscs.push_front(i);
             continue;
         }
-        // If we see an empty square, it is a valid move: insert it into the
+        // If we see an empty square, it is a legal move: insert it into the
         // moves hash table. Second condition is to resolve edge case of
         // disc immediately adjacent to original disc.
         else if (currentSquare == 0 && !flippedDiscs.empty()) {
             legalMove.first = i;
             legalMove.second = flippedDiscs;
-            this->moves.insert(legalMove);
+            pMoves->insert(legalMove);
             break;
         }
     }

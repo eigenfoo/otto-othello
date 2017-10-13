@@ -131,7 +131,7 @@ void othelloGame::move(int color) {
     } 
     else if (color == 2) {
         std::cout << "White to move" << std::endl;
-        move = this->whitePlayer.move(this->board.moves, this->passes[1]);
+        move = this->whitePlayer.move(this->board.moves, this->passes[0]);
     }
 
     if (!this->passes[0] && !this->passes[1]) {
@@ -141,11 +141,10 @@ void othelloGame::move(int color) {
 
 // Update status of the game
 void othelloGame::checkGameOver() {
-    auto begin = this->board.positions.begin();
-    auto end = this->board.positions.end();
+    // FIXME remove me after debugging
+    std::cout << (terminalState() ? "yes" : "no") << std::endl;
 
-    if (find(begin, end, 0) == end || (this->passes[0] && this->passes[1])) {
-        this->gameOver = true;
+    if (this->passes[0] && this->passes[1]) {
         int blackCount = std::count(this->board.positions.begin(),
                 this->board.positions.end(), 1); 
         int whiteCount = std::count(this->board.positions.begin(),
@@ -155,27 +154,27 @@ void othelloGame::checkGameOver() {
 
         if (blackCount > whiteCount) {
             std::cout << "Black wins!" << std::endl;
-            std::cout << "Black: " << blackCount << "\t" 
-                << "White: " << whiteCount << std::endl;
         }
         else if (blackCount < whiteCount) {
             std::cout << "White wins!" << std::endl;
-            std::cout << "Black: " << blackCount << "\t" 
-                << "White: " << whiteCount << std::endl;
         }
         else {
             std::cout << "Tie!" << std::endl;
-            std::cout << "Black: " << blackCount << "\t" 
-                << "White: " << whiteCount << std::endl;
         }
+        std::cout << "Black: " << blackCount << "\t"
+            << "White: " << whiteCount << std::endl;
     }
     else {
+        this->passes[1] = this->passes[0];
         this->passes[0] = false;
-        this->passes[1] = false;
         this->plies++;
     }
 }
 
-bool terminalState(othelloGame &game, int &color) {
+bool othelloGame::terminalState() {
+    // TODO debug terminalState
+    if (this->passes[0] && this->passes[1]) {
+        return true;
+    }
     return false;
 }

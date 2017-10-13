@@ -16,7 +16,8 @@ class othelloGame {
         float timeLimit = 0.0;
 
         int plies = 0;
-        bool gameOver = false;
+        // passes[0] and passes[1] are true if the most recent/second most
+        // recent ply was a pass, resp.
         bool passes[2] = {false, false};
 
         // Constructor
@@ -37,7 +38,7 @@ class othelloGame {
         // Update status of the game
         void checkGameOver();
 
-        bool terminalState(const othelloGame &game, int &color);
+        bool terminalState();
 };
 
 #endif // GAME_HPP

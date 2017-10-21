@@ -6,6 +6,7 @@
 #include <list>
 #include <tuple>
 #include <unordered_map>
+#include <algorithm> // Needed for std::count
 #include <sstream> // Needed for humanPlayer and computerPlayer
 
 class othelloBoard {
@@ -14,6 +15,9 @@ class othelloBoard {
         // board are indexed from 0 to 63, left to right, top to bottom.
         // positions[i] is 1 for a black disc, 2 for a white disc
         std::vector<int> positions;
+
+        int plies = 0;
+        float timeLimit = 0.0;
 
         // moves is a hash table specifying all possible moves from the
         // current board position. Possible moves are keys, and a list of

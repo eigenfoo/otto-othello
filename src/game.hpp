@@ -13,9 +13,7 @@ class othelloGame {
         othelloPlayer whitePlayer;
 
         int toMove = 1;
-        float timeLimit = 0.0;
 
-        int plies = 0;
         // passes[0] and passes[1] are true if the most recent/second most
         // recent ply was a pass, resp.
         bool passes[2] = {false, false};

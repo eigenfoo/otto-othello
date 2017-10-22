@@ -36,6 +36,7 @@ class othelloGame {
         // Update status of the game
         void checkGameOver();
 
+        // Checks if game is a terminal state
         bool terminalState();
 };
 

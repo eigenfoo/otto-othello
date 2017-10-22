@@ -170,6 +170,7 @@ void othelloGame::checkGameOver() {
     }
 }
 
+// Checks if game is a terminal state
 bool othelloGame::terminalState() {
     if (this->passes[0] && this->passes[1]) {
         return true;

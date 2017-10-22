@@ -5,7 +5,7 @@
 #include <vector>
 #include <list>
 #include <tuple>
-#include <unordered_map>
+#include <map>
 #include <algorithm> // Needed for std::count
 #include <sstream> // Needed for humanPlayer and computerPlayer
 
@@ -22,7 +22,7 @@ class othelloBoard {
         // moves is a hash table specifying all possible moves from the
         // current board position. Possible moves are keys, and a list of
         // all pieces to be flipped are values.
-        std::unordered_map<int, std::list<int>> moves;
+        std::map<int, std::list<int>> moves;
 
         // Constructor
         othelloBoard();
@@ -36,19 +36,16 @@ class othelloBoard {
         // Finds all legal moves, writing to a reference to a hash table with
         // legal moves as keys, and a list of all discs to be flipped as values.
         void findLegalMoves(int color,
-                std::unordered_map<int, std::list<int>> *pMoves);
+                std::map<int, std::list<int>> *pMoves);
 
         // Helper function to find a legal move given a disc, its color and a direction.
         // Writes the legal move and a list of all discs to be flipped as a pair to the
         // reference to a hash table.
         void findLegalMoveInDirection(int &disc, int &color, int direction,
-                std::unordered_map<int, std::list<int>> *pMoves);
+                std::map<int, std::list<int>> *pMoves);
 
         // Update board after a move
         void updateBoard(int color, std::pair<int, std::list<int>> move);
-
-        othelloBoard applyMoveToBoard(int color,
-                std::pair<int, std::list<int>> move, othelloBoard board);
 
     private: 
         // Helper function to convert board square index to coordinate

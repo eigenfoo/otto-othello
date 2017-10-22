@@ -47,6 +47,9 @@ class othelloBoard {
         // Update board after a move
         void updateBoard(int color, std::pair<int, std::list<int>> move);
 
+        othelloBoard applyMoveToBoard(int color,
+                std::pair<int, std::list<int>> move, othelloBoard board);
+
     private: 
         // Helper function to convert board square index to coordinate
         // strings

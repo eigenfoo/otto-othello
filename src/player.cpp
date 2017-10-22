@@ -66,11 +66,10 @@ std::pair<int, std::list<int>> othelloPlayer::humanMove(othelloBoard &board,
 
 // Driver for the AI algorithm
 std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
-        std::unordered_map<int, std::list<int>> &legalMoves,
-        bool &pass) {
+        std::unordered_map<int, std::list<int>> &legalMoves, bool &pass) {
 
-    // FIXME there is move and bestMove... this seems wasteful
-    std::chrono::time_point<std::chrono::system_clock> startTime = this->startTimer();
+    std::chrono::time_point<std::chrono::system_clock> startTime
+        = this->startTimer();
     std::pair<int, std::list<int>> move;
 
     if (legalMoves.empty()) {
@@ -82,10 +81,7 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
     else if (legalMoves.size() == 1) {
         std::cout << "Only one legal move!" << std::endl;
         std::cout << "\tComputer takes only legal move.\n" << std::endl;
-        // FIXME there must be a better way to get the ONLY element...
-        for (auto keyval : legalMoves) {
-            move = keyval;
-        }
+        move = *(legalMoves.begin());
         return move;
     }
 
@@ -105,7 +101,7 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
         move = this->depthLimitedAlphaBeta(board, legalMoves, depth, startTime);
 
         if (move.first >= 0) {
-            bestMove = move;
+            move = bestMove;
         }
 
         // If time is more than half up, don't bother searching to next depth
@@ -115,7 +111,6 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
         }
     }
 
-    move = bestMove;
     double elapsedSeconds = this->stopTimer(startTime);
     std::cout << "Time elapsed: " << elapsedSeconds << " sec\n"
         << std::endl;
@@ -137,17 +132,14 @@ double othelloPlayer::stopTimer(
     return elapsedSeconds.count();
 }
 
-// TODO figure out alphabeta...
 // Performs depth-limited minimax search with alpha-beta pruning
-// Implemented using a stack to avoid recursion overhead
-// Returns -1 if time runs out
+// Implemented iteratively to avoid recursion overhead
+// TODO Returns -1 if time runs out
 std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         othelloBoard &board,
         std::unordered_map<int, std::list<int>> legalMoves,
         int depthLimit,
         std::chrono::time_point<std::chrono::system_clock> startTime) {
-
-    std::pair<int, std::list<int>> move;
 
     // Game tree variables
     struct {
@@ -156,7 +148,6 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         int beta;
         int score;
         othelloBoard board;
-        std::unordered_map<int, std::list<int>> legalMoves;
         int numLegalMoves;
         int currentMove;
     } nodeStack[50];
@@ -167,23 +158,57 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
     nodeStack[0].beta = infinity;
     nodeStack[0].score = -infinity;
     nodeStack[0].board = board;
-    nodeStack[0].legalMoves = legalMoves;
-    nodeStack[0].numLegalMoves = legalMoves.size();
     nodeStack[0].currentMove = 0;
 
+    std::pair<int, std::list<int>> move;
     int depth = 0;
+    int bestMoveIndex = 0;
 
     // While we have not evaluated all the root's children
     while (nodeStack[0].currentMove < nodeStack[0].numLegalMoves) {
         if (nodeStack[depth].beta <= nodeStack[depth].alpha
                 || nodeStack[depth].currentMove == nodeStack[depth].numLegalMoves) {
-            // TODO implement pruning...
             // Prune, update parent, decrease depth
+            if (depth == 0) {
+                if (nodeStack[1].score > nodeStack[0].score) {
+                    nodeStack[0].score = nodeStack[1].score;
+                    bestMoveIndex = nodeStack[0].currentMove - 1;
+                }
+
+                if (nodeStack[0].score > nodeStack[0].alpha) {
+                    nodeStack[0].alpha = nodeStack[0].score;
+                }
+
+                break;
+            }
+
+            if (nodeStack[depth].isMaxNode) {
+                if(nodeStack[depth+1].score > nodeStack[depth].score) {
+                    nodeStack[depth].score = nodeStack[depth+1].score;
+                    if(depth == 0) {
+                        bestMoveIndex = nodeStack[depth].currentMove - 1;
+                    }
+                }
+
+                if(nodeStack[depth].score > nodeStack[depth].alpha) {
+                    nodeStack[depth].alpha = nodeStack[depth].score;
+                }
+            }
+
+            else {
+                if(nodeStack[depth+1].score < nodeStack[depth].score) {
+                    nodeStack[depth].score = nodeStack[depth+1].score;
+                }
+
+                if(nodeStack[depth].score < nodeStack[depth].beta) {
+                    nodeStack[depth].beta = nodeStack[depth].score;
+                }
+            }
         }
         else {
             // Evaluate next node and search
-            // TODO how to apply move to board??
-            // nodeStack[depth+1].board = 
+            // FIXME how to apply move to board??
+            // nodeStack[depth+1].board = nodeStack[depth]
             nodeStack[depth].currentMove++;
 
             // If the next depth is not at the depth limit
@@ -196,20 +221,38 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                 nodeStack[depth].score = (nodeStack[depth].isMaxNode ? -infinity : infinity);
                 nodeStack[depth].alpha = nodeStack[depth-1].alpha;
                 nodeStack[depth].beta = nodeStack[depth-1].beta;
-                // TODO figure out legal moves. Use getLegalMoves function??
-                // nodeStack[depth].legalMoves = 
-                nodeStack[depth].numLegalMoves = nodeStack[depth].legalMoves.size();
+                nodeStack[depth].board.findLegalMoves(this->color, &nodeStack[depth].board.moves);
+                nodeStack[depth].numLegalMoves = nodeStack[depth].board.moves.size();
                 nodeStack[depth].currentMove = 0;
             }
-            // Else, the next node is a "leaf"
             else {
-                // Evaluate heuristic and update values
+                // The next node is a leaf: evaluate heuristic and update values
+                int score = this->heuristic.evaluate(nodeStack[depth+1].board, this->color);
 
+                if (nodeStack[depth].isMaxNode) {
+                    if (score > nodeStack[depth].score) {
+                        nodeStack[depth].score = score;
+                        if (depth == 0) {
+                            bestMoveIndex = nodeStack[depth].currentMove - 1;
+                        }
+                    }
+
+                    if (nodeStack[depth].score > nodeStack[depth].alpha) {
+                        nodeStack[depth].alpha = nodeStack[depth].score;
+                    }
+                }
+                else {
+                    if (score < nodeStack[depth].score) {
+                        nodeStack[depth].score = score;
+                    }
+
+                    if (nodeStack[depth].score < nodeStack[depth].beta) {
+                            nodeStack[depth].beta = nodeStack[depth].score;
+                    }
+                }
             }
         }
     }
-
-
 
     return move;
 }

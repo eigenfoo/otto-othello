@@ -9,7 +9,7 @@ int othelloHeuristic::utility(const othelloBoard &board) {
     return blackCount - whiteCount;
 }
 
-int othelloHeuristic::evaluate(const othelloBoard &board, int &color) {
+int othelloHeuristic::evaluate(const othelloBoard &board, int color) {
     return discDifference(board);
 }
 

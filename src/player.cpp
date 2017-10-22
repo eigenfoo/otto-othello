@@ -67,7 +67,6 @@ std::pair<int, std::list<int>> othelloPlayer::humanMove(othelloBoard &board,
 // Driver for the AI algorithm
 std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
         std::map<int, std::list<int>> &legalMoves, bool &pass) {
-
     std::chrono::time_point<std::chrono::system_clock> startTime =
         this->startTimer();
     std::pair<int, std::list<int>> move;
@@ -98,6 +97,7 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
 
         // TODO implement killer move heuristic
         move = this->depthLimitedAlphaBeta(board, depth, startTime, board.timeLimit);
+        std::cout << "Done with depth " << depth << "!" << std::endl;
 
         if (move.first == -1) {
             break;
@@ -128,7 +128,6 @@ std::chrono::time_point<std::chrono::system_clock> othelloPlayer::startTimer() {
 // Returns time elapsed in seconds
 float othelloPlayer::stopTimer(
         std::chrono::time_point<std::chrono::system_clock> startTime) {
-
     std::chrono::time_point<std::chrono::system_clock> endTime =
         std::chrono::system_clock::now();
     std::chrono::duration<float> elapsedSeconds = endTime - startTime;
@@ -200,6 +199,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         }
         else {
             // Evaluate next node and search
+            // FIXME maybe the problem is here??
             nodeStack[depth+1].board = nodeStack[depth].board;
             nodeStack[depth+1].board.updateBoard(this->color,
                     *nodeStack[depth].moveIterator);
@@ -225,6 +225,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                 // The next node is a leaf: evaluate heuristic and update values
                 int score = this->heuristic.evaluate(nodeStack[depth+1].board,
                         this->color);
+                std::cout << score << std::endl; // REMOVE AFTER DEBUGGING
 
                 if (nodeStack[depth].isMaxNode) {
                     if (score > nodeStack[depth].score) {

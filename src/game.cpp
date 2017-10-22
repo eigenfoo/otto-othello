@@ -18,9 +18,9 @@ void othelloGame::newGame(bool blackComputer, bool whiteComputer,
 
     // Initialize players
     this->blackPlayer.color = 1;
-    this->blackPlayer.computer = (blackComputer ? true : false);
+    this->blackPlayer.computer = blackComputer;
     this->whitePlayer.color = 2;
-    this->whitePlayer.computer = (whiteComputer ? true : false);
+    this->whitePlayer.computer = whiteComputer;
 
     // Initialize player to move
     this->toMove = 1;
@@ -72,9 +72,9 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer,
 
     // Initialize players
     this->blackPlayer.color = 1;
-    this->blackPlayer.computer = (blackComputer ? true : false);
+    this->blackPlayer.computer = blackComputer;
     this->whitePlayer.color = 2;
-    this->whitePlayer.computer = (whiteComputer ? true : false);
+    this->whitePlayer.computer = whiteComputer;
 
     // Load player to move
     if (std::getline(ifs, str)) {

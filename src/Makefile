@@ -1,7 +1,7 @@
 .PHONY: clean debug run
 
 CXX = g++
-CXXFLAGS = -std=c++11 -march=native -O3 -Wall -Wextra
+CXXFLAGS = -std=c++11 -march=native -O3 -Wall
 LDFLAGS =
 
 SOURCES = othello.cpp game.cpp board.cpp player.cpp heuristic.cpp

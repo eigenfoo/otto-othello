@@ -18,7 +18,6 @@ class othelloPlayer {
     private:
         const static long infinity = 2147483647;
         othelloHeuristic heuristic;
-
         // Prompts user for next move
         // `board` is only necessary for polymorphic `move`...
         std::pair<int, std::list<int>> humanMove(othelloBoard &board,
@@ -30,14 +29,22 @@ class othelloPlayer {
                 std::unordered_map<int, std::list<int>> &legalMoves,
                 bool &pass);
 
+        // Returns time point
         std::chrono::time_point<std::chrono::system_clock> startTimer();
-        std::chrono::duration<double> stopTimer(
+
+        // Returns time elapsed in seconds
+        // FIXME is a double really necessary? Look up docs for float
+        double stopTimer(
                 std::chrono::time_point<std::chrono::system_clock> startTime);
 
         // Performs depth-limited minimax search with alpha-beta pruning
-        std::pair<std::pair<int, std::list<int>>, int> alphabeta(
-                othelloBoard &board, int depth, int alpha, int beta,
-                bool maximizing);
+        // Implemented using a stack to avoid recursion overhead
+        // Returns -1 if time runs out
+        std::pair<int, std::list<int>> depthLimitedAlphaBeta(
+                othelloBoard &board, 
+                std::unordered_map<int, std::list<int>> legalMoves,
+                int depthLimit,
+                std::chrono::time_point<std::chrono::system_clock> startTime);
 };
 
 #endif //PLAYER_HPP

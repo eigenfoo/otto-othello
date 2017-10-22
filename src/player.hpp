@@ -33,17 +33,14 @@ class othelloPlayer {
         std::chrono::time_point<std::chrono::system_clock> startTimer();
 
         // Returns time elapsed in seconds
-        // FIXME is a double really necessary? Look up docs for float
-        double stopTimer(
+        float stopTimer(
                 std::chrono::time_point<std::chrono::system_clock> startTime);
 
         // Performs depth-limited minimax search with alpha-beta pruning
         // Implemented using a stack to avoid recursion overhead
         // Returns -1 if time runs out
         std::pair<int, std::list<int>> depthLimitedAlphaBeta(
-                othelloBoard &board, 
-                std::unordered_map<int, std::list<int>> legalMoves,
-                int depthLimit,
+                othelloBoard &board, int depthLimit,
                 std::chrono::time_point<std::chrono::system_clock> startTime);
 };
 

@@ -96,9 +96,8 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
     for (int depth = 1; depth < maxDepth; depth++) {
         std::cout << "\tSearching to depth " << depth << "..." << std::endl;
 
-        // FIXME whats up with maximizing? Can the root node always be a max node?
         // TODO implement killer move heuristic
-        move = this->depthLimitedAlphaBeta(board, legalMoves, depth, startTime);
+        move = this->depthLimitedAlphaBeta(board, depth, startTime);
 
         if (move.first >= 0) {
             move = bestMove;
@@ -124,11 +123,12 @@ std::chrono::time_point<std::chrono::system_clock> othelloPlayer::startTimer() {
 }
 
 // Returns time elapsed in seconds
-double othelloPlayer::stopTimer(
+float othelloPlayer::stopTimer(
         std::chrono::time_point<std::chrono::system_clock> startTime) {
+
     std::chrono::time_point<std::chrono::system_clock> endTime =
         std::chrono::system_clock::now();
-    std::chrono::duration<double> elapsedSeconds = endTime - startTime;
+    std::chrono::duration<float> elapsedSeconds = endTime - startTime;
     return elapsedSeconds.count();
 }
 
@@ -136,12 +136,10 @@ double othelloPlayer::stopTimer(
 // Implemented iteratively to avoid recursion overhead
 // TODO Returns -1 if time runs out
 std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
-        othelloBoard &board,
-        std::unordered_map<int, std::list<int>> legalMoves,
-        int depthLimit,
+        othelloBoard &board, int depthLimit,
         std::chrono::time_point<std::chrono::system_clock> startTime) {
 
-    // Game tree variables
+    // Node stack
     struct {
         bool isMaxNode;
         int alpha;
@@ -150,7 +148,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         othelloBoard board;
         int numLegalMoves;
         int currentMove;
-    } nodeStack[50];
+    } nodeStack[60];
 
     // Initialize root node
     nodeStack[0].isMaxNode = true;
@@ -207,13 +205,12 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         }
         else {
             // Evaluate next node and search
-            // FIXME how to apply move to board??
-            // nodeStack[depth+1].board = nodeStack[depth]
+            nodeStack[depth+1].board = nodeStack[depth].board;
+            nodeStack[depth+1].board.updateBoard(this->color, move);
             nodeStack[depth].currentMove++;
 
             // If the next depth is not at the depth limit
             if (depth + 1 < depthLimit) {
-                // Go one level deeper
                 depth++;
 
                 // Initialize next node in stack

@@ -156,6 +156,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
     nodeStack[0].beta = infinity;
     nodeStack[0].score = -infinity;
     nodeStack[0].board = board;
+    nodeStack[0].numLegalMoves = board.positions.size();
     nodeStack[0].currentMove = 0;
 
     std::pair<int, std::list<int>> move;
@@ -164,12 +165,16 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
 
     // While we have not evaluated all the root's children
     while (nodeStack[0].currentMove < nodeStack[0].numLegalMoves) {
+        // If we can prune, or have evaluated all children
         if (nodeStack[depth].beta <= nodeStack[depth].alpha
                 || nodeStack[depth].currentMove == nodeStack[depth].numLegalMoves) {
-            // Prune, update parent, decrease depth
+
+            // FIXME can't this be put into the next if statement? It's just a
+            // degenerate case...
             if (depth == 0) {
                 if (nodeStack[1].score > nodeStack[0].score) {
                     nodeStack[0].score = nodeStack[1].score;
+                    // FIXME change index to move
                     bestMoveIndex = nodeStack[0].currentMove - 1;
                 }
 
@@ -181,24 +186,24 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
             }
 
             if (nodeStack[depth].isMaxNode) {
-                if(nodeStack[depth+1].score > nodeStack[depth].score) {
+                if (nodeStack[depth+1].score > nodeStack[depth].score) {
                     nodeStack[depth].score = nodeStack[depth+1].score;
-                    if(depth == 0) {
+                    if (depth == 0) {
+                        // FIXME change index to move
                         bestMoveIndex = nodeStack[depth].currentMove - 1;
                     }
                 }
 
-                if(nodeStack[depth].score > nodeStack[depth].alpha) {
+                if (nodeStack[depth].score > nodeStack[depth].alpha) {
                     nodeStack[depth].alpha = nodeStack[depth].score;
                 }
             }
-
             else {
-                if(nodeStack[depth+1].score < nodeStack[depth].score) {
+                if (nodeStack[depth+1].score < nodeStack[depth].score) {
                     nodeStack[depth].score = nodeStack[depth+1].score;
                 }
 
-                if(nodeStack[depth].score < nodeStack[depth].beta) {
+                if (nodeStack[depth].score < nodeStack[depth].beta) {
                     nodeStack[depth].beta = nodeStack[depth].score;
                 }
             }
@@ -206,7 +211,9 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         else {
             // Evaluate next node and search
             nodeStack[depth+1].board = nodeStack[depth].board;
+            // FIXME we want the NEXT unexamined move!!!
             nodeStack[depth+1].board.updateBoard(this->color, move);
+                    //nodeStack[depth].board.moves[nodeStack[depth].currentMove]);
             nodeStack[depth].currentMove++;
 
             // If the next depth is not at the depth limit
@@ -251,5 +258,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         }
     }
 
+    // FIXME instead of a bestMoveIndex, we need the actual move!
+    // move = nodeStack[0].board.moves[bestMoveIndex];
     return move;
 }

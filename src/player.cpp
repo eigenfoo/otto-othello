@@ -166,6 +166,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
     int depth = 0;
     std::map<int, std::list<int>>::iterator bestMove;
 
+    // FIXME program never completes search to depth 2...
     // While we have not evaluated all the root's children
     while (nodeStack[0].moveIterator != nodeStack[0].lastMove) {
         // If we can prune, or have evaluated all children
@@ -250,7 +251,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         }
 
         // If we are almost out of time, failure.
-        if (this->stopTimer(startTime) > 0.99*timeLimit) {
+        if (this->stopTimer(startTime) > 0.995*timeLimit) {
             std::pair<int, std::list<int>> move;
             move.first = -1;
             return move;

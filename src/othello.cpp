@@ -26,19 +26,22 @@ int main() {
         game.checkGameOver();
     }
 
-    while (!game.passes[0] && !game.passes[1]) {
+    //while (!game.passes[0] && !game.passes[1]) {
+    while (!game.gameOver) {
         game.board.findLegalMoves(1, &game.board.moves);
         game.board.displayBoard(1);
         game.board.displayLegalMoves();
         game.move(1);
-
         game.checkGameOver();
+
+        if (game.gameOver) {
+            break;
+        }
 
         game.board.findLegalMoves(2, &game.board.moves);
         game.board.displayBoard(2);
         game.board.displayLegalMoves();
         game.move(2);
-
         game.checkGameOver();
     }
 
@@ -95,10 +98,6 @@ void initializeGame(int choice, othelloGame &game,
 
         blackComputer = promptAIPlayer(1);
         whiteComputer = promptAIPlayer(2);
-
-        if (blackComputer || whiteComputer) {
-            timeLimit = promptAITimeLimit();
-        }
 
         game.loadGame(fileName, blackComputer, whiteComputer);
     }

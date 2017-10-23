@@ -68,6 +68,7 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer,
             idx++;
         }
     }
+    this->board.plies = 64 - std::count(setup.begin(), setup.end(), 0);
     this->board.positions.swap(setup);
 
     // Initialize players
@@ -136,7 +137,7 @@ void othelloGame::move(int color) {
                 this->passes[0]);
     }
 
-    if (!this->passes[0] && !this->passes[1]) {
+    if (!this->passes[0]) {
         this->board.updateBoard(color, move);
     }
 }
@@ -162,6 +163,8 @@ void othelloGame::checkGameOver() {
         }
         std::cout << "Black: " << blackCount << "\t"
             << "White: " << whiteCount << std::endl;
+
+        this->gameOver = true;
     }
     else {
         this->passes[1] = this->passes[0];

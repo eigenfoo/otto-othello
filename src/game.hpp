@@ -13,6 +13,7 @@ class othelloGame {
         othelloPlayer whitePlayer;
 
         int toMove = 1;
+        bool gameOver = false;
 
         // passes[0] and passes[1] are true if the most recent/second most
         // recent ply was a pass, resp.

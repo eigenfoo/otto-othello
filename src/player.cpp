@@ -88,8 +88,7 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
 
     // Search by iterative deepening
     std::cout << "Searching game tree..." << std::endl;
-
-    int maxDepth = 60 - board.plies + 1;
+    int maxDepth = 64 - board.plies;
     std::pair<int, std::list<int>> bestMove;
 
     for (int depthLimit = 1; depthLimit < maxDepth; depthLimit++) {
@@ -99,12 +98,13 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
         // TODO implement killer move heuristic
         move = this->depthLimitedAlphaBeta(board, depthLimit, startTime,
                 board.timeLimit);
-        std::cout << "Done with depth " << depthLimit << "!" << std::endl;
 
         if (move.first == -1) {
+            std::cout << "\t\tSearch aborted" << std::endl;
             break;
         }
         else {
+            std::cout << "\t\tSearch complete" << std::endl;
             bestMove = move;
         }
 
@@ -142,6 +142,8 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         std::chrono::time_point<std::chrono::system_clock> startTime,
         float timeLimit) {
 
+    // FIXME make this to a class variable or global... too much dynamic memory
+    // allocation here
     // Node stack
     struct {
         bool isMaxNode;
@@ -151,7 +153,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         othelloBoard board;
         std::map<int, std::list<int>>::iterator moveIterator;
         std::map<int, std::list<int>>::iterator lastMove;
-    } nodeStack[60];
+    } nodeStack[64];
 
     // Initialize root node
     nodeStack[0].isMaxNode = true;
@@ -168,14 +170,14 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
     std::map<int, std::list<int>>::iterator bestMove;
 
     // While we have not evaluated all the root's children
-    // FIXME make sure to implement that +-1 fix that Sable talked about
-    while (nodeStack[0].moveIterator != nodeStack[0].lastMove) {
+    // FIXME make sure to implement Sable's +/-1 fix
+    while (true) {
+    //while (nodeStack[0].moveIterator != nodeStack[0].lastMove) {
         // If we can prune, or have evaluated all children
         if (nodeStack[depth].beta <= nodeStack[depth].alpha
                 || nodeStack[depth].moveIterator == nodeStack[depth].lastMove) {
 
             if (depth-- == 0) {
-                //std::cout << "depth: " << depth << std::endl;
                 if (nodeStack[1].score > nodeStack[0].score) {
                     nodeStack[0].score = nodeStack[1].score;
                     bestMove = std::prev(nodeStack[0].moveIterator);
@@ -211,17 +213,19 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
             }
         }
         else {
-            // Evaluate next node and search
+            // Generate next node, increment moveIterator
             nodeStack[depth+1].board = nodeStack[depth].board;
             nodeStack[depth+1].board.updateBoard(
                     (nodeStack[depth].isMaxNode ? this->color : oppColor),
                     *nodeStack[depth].moveIterator);
+            // FIXME this is why it ends at depth=1! Increment
+            // nodeStack[0].moveIterator, and suddenly the while loop
+            // condition is false.
             nodeStack[depth].moveIterator++;
 
             // If the next depth is not at the depth limit
             if (depth + 1 < depthLimit) {
                 depth++;
-                //std::cout << "depth: " << depth << std::endl;
 
                 // Initialize next node in stack
                 nodeStack[depth].isMaxNode = !nodeStack[depth-1].isMaxNode;
@@ -229,17 +233,17 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                     (nodeStack[depth].isMaxNode ? -infinity : infinity);
                 nodeStack[depth].alpha = nodeStack[depth-1].alpha;
                 nodeStack[depth].beta = nodeStack[depth-1].beta;
-                nodeStack[depth].board.findLegalMoves(this->color,
+                nodeStack[depth].board.findLegalMoves(
+                        (nodeStack[depth].isMaxNode ? this->color : oppColor),
                         &nodeStack[depth].board.moves);
                 nodeStack[depth].moveIterator =
                     nodeStack[depth].board.moves.begin();
                 nodeStack[depth].lastMove = nodeStack[depth].board.moves.end();
             }
             else {
-                // The next node is a leaf: evaluate heuristic and update values
+                // The node is a leaf: evaluate heuristic and update values
                 // TODO change this to heuristic.evaluate once alphabeta is done
                 leafScore = this->heuristic.utility(nodeStack[depth+1].board);
-                //std::cout << leafScore << std::endl;
 
                 if (nodeStack[depth].isMaxNode) {
                     if (leafScore > nodeStack[depth].score) {

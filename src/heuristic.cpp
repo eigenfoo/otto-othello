@@ -2,9 +2,9 @@
 
 int othelloHeuristic::utility(const othelloBoard &board) {
     int blackCount = std::count(board.positions.begin(),
-            board.positions.end(), 1); 
+            board.positions.end(), 1);
     int whiteCount = std::count(board.positions.begin(),
-            board.positions.end(), 2); 
+            board.positions.end(), 2);
 
     return blackCount - whiteCount;
 }

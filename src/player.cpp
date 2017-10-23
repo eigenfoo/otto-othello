@@ -92,12 +92,14 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
     int maxDepth = 60 - board.plies + 1;
     std::pair<int, std::list<int>> bestMove;
 
-    for (int depth = 1; depth < maxDepth; depth++) {
-        std::cout << "\tSearching to depth " << depth << "..." << std::endl;
+    for (int depthLimit = 1; depthLimit < maxDepth; depthLimit++) {
+        std::cout << "\tSearching to depth " << depthLimit << "..."
+            << std::endl;
 
         // TODO implement killer move heuristic
-        move = this->depthLimitedAlphaBeta(board, depth, startTime, board.timeLimit);
-        std::cout << "Done with depth " << depth << "!" << std::endl;
+        move = this->depthLimitedAlphaBeta(board, depthLimit, startTime,
+                board.timeLimit);
+        std::cout << "Done with depth " << depthLimit << "!" << std::endl;
 
         if (move.first == -1) {
             break;
@@ -107,14 +109,12 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
         }
 
         // If time is more than half up, don't bother searching to next depth
-        float elapsedSeconds = this->stopTimer(startTime);
-        if (elapsedSeconds > 0.5*board.timeLimit) {
+        if (this->stopTimer(startTime) > 0.5*board.timeLimit) {
             break;
         }
     }
 
-    float elapsedSeconds = this->stopTimer(startTime);
-    std::cout << "Time elapsed: " << elapsedSeconds << " sec\n"
+    std::cout << "Time elapsed: " << this->stopTimer(startTime) << " sec\n"
         << std::endl;
 
     return bestMove;
@@ -163,14 +163,20 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
     nodeStack[0].lastMove = nodeStack[0].board.moves.end();
 
     int depth = 0;
+    int leafScore = 0;
+    int oppColor = (this->color == 1 ? 2 : 1);
     std::map<int, std::list<int>>::iterator bestMove;
 
-    // FIXME program never completes search to depth 2...
     // While we have not evaluated all the root's children
+    // FIXME make sure to implement that +1 fix that Sable talked about
     while (nodeStack[0].moveIterator != nodeStack[0].lastMove) {
         // If we can prune, or have evaluated all children
         if (nodeStack[depth].beta <= nodeStack[depth].alpha
                 || nodeStack[depth].moveIterator == nodeStack[depth].lastMove) {
+
+            depth--;
+            //std::cout << "depth: " << depth << std::endl;
+
             if (nodeStack[depth].isMaxNode) {
                 if (nodeStack[depth+1].score > nodeStack[depth].score) {
                     nodeStack[depth].score = nodeStack[depth+1].score;
@@ -199,15 +205,16 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         }
         else {
             // Evaluate next node and search
-            // FIXME maybe the problem is here??
             nodeStack[depth+1].board = nodeStack[depth].board;
-            nodeStack[depth+1].board.updateBoard(this->color,
+            nodeStack[depth+1].board.updateBoard(
+                    (nodeStack[depth].isMaxNode ? this->color : oppColor),
                     *nodeStack[depth].moveIterator);
             nodeStack[depth].moveIterator++;
 
             // If the next depth is not at the depth limit
             if (depth + 1 < depthLimit) {
                 depth++;
+                //std::cout << "depth: " << depth << std::endl;
 
                 // Initialize next node in stack
                 nodeStack[depth].isMaxNode = !nodeStack[depth-1].isMaxNode;
@@ -223,13 +230,13 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
             }
             else {
                 // The next node is a leaf: evaluate heuristic and update values
-                int score = this->heuristic.evaluate(nodeStack[depth+1].board,
-                        this->color);
-                std::cout << score << std::endl; // REMOVE AFTER DEBUGGING
+                // TODO change this to heuristic.evaluate once alphabeta is done
+                leafScore = this->heuristic.utility(nodeStack[depth+1].board);
+                //std::cout << leafScore << std::endl;
 
                 if (nodeStack[depth].isMaxNode) {
-                    if (score > nodeStack[depth].score) {
-                        nodeStack[depth].score = score;
+                    if (leafScore > nodeStack[depth].score) {
+                        nodeStack[depth].score = leafScore;
                         if (depth == 0) {
                             bestMove = std::prev(nodeStack[0].moveIterator);
                         }
@@ -240,8 +247,8 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                     }
                 }
                 else {
-                    if (score < nodeStack[depth].score) {
-                        nodeStack[depth].score = score;
+                    if (leafScore < nodeStack[depth].score) {
+                        nodeStack[depth].score = leafScore;
                     }
 
                     if (nodeStack[depth].score < nodeStack[depth].beta) {
@@ -251,8 +258,8 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
             }
         }
 
-        // If we are almost out of time, failure.
-        if (this->stopTimer(startTime) > 0.995*timeLimit) {
+        // If we are almost out of time, failure
+        if (this->stopTimer(startTime) > 0.99*timeLimit) {
             std::pair<int, std::list<int>> move;
             move.first = -1;
             return move;

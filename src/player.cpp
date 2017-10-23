@@ -168,14 +168,25 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
     std::map<int, std::list<int>>::iterator bestMove;
 
     // While we have not evaluated all the root's children
-    // FIXME make sure to implement that +1 fix that Sable talked about
+    // FIXME make sure to implement that +-1 fix that Sable talked about
     while (nodeStack[0].moveIterator != nodeStack[0].lastMove) {
         // If we can prune, or have evaluated all children
         if (nodeStack[depth].beta <= nodeStack[depth].alpha
                 || nodeStack[depth].moveIterator == nodeStack[depth].lastMove) {
 
-            depth--;
-            //std::cout << "depth: " << depth << std::endl;
+            if (depth-- == 0) {
+                //std::cout << "depth: " << depth << std::endl;
+                if (nodeStack[1].score > nodeStack[0].score) {
+                    nodeStack[0].score = nodeStack[1].score;
+                    bestMove = std::prev(nodeStack[0].moveIterator);
+                }
+
+                if (nodeStack[0].score > nodeStack[0].alpha) {
+                    nodeStack[0].alpha = nodeStack[0].score;
+                }
+
+                break;
+            }
 
             if (nodeStack[depth].isMaxNode) {
                 if (nodeStack[depth+1].score > nodeStack[depth].score) {
@@ -187,10 +198,6 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
 
                 if (nodeStack[depth].score > nodeStack[depth].alpha) {
                     nodeStack[depth].alpha = nodeStack[depth].score;
-                }
-
-                if (depth == 0) {
-                    break;
                 }
             }
             else {
@@ -218,8 +225,8 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
 
                 // Initialize next node in stack
                 nodeStack[depth].isMaxNode = !nodeStack[depth-1].isMaxNode;
-                nodeStack[depth].score = (nodeStack[depth].isMaxNode ?
-                        -infinity : infinity);
+                nodeStack[depth].score =
+                    (nodeStack[depth].isMaxNode ? -infinity : infinity);
                 nodeStack[depth].alpha = nodeStack[depth-1].alpha;
                 nodeStack[depth].beta = nodeStack[depth-1].beta;
                 nodeStack[depth].board.findLegalMoves(this->color,

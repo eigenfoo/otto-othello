@@ -92,8 +92,7 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
     std::pair<int, std::list<int>> bestMove;
 
     for (int depthLimit = 1; depthLimit < maxDepth; depthLimit++) {
-        std::cout << "\tSearching to depth " << depthLimit << "..."
-            << std::endl;
+        std::cout << "\tSearching to depth " << depthLimit;
 
         // TODO implement killer move heuristic
         move = this->depthLimitedAlphaBeta(board, depthLimit, startTime,
@@ -172,7 +171,6 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
     // While we have not evaluated all the root's children
     // FIXME make sure to implement Sable's +/-1 fix
     while (true) {
-    //while (nodeStack[0].moveIterator != nodeStack[0].lastMove) {
         // If we can prune, or have evaluated all children
         if (nodeStack[depth].beta <= nodeStack[depth].alpha
                 || nodeStack[depth].moveIterator == nodeStack[depth].lastMove) {
@@ -218,9 +216,6 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
             nodeStack[depth+1].board.updateBoard(
                     (nodeStack[depth].isMaxNode ? this->color : oppColor),
                     *nodeStack[depth].moveIterator);
-            // FIXME this is why it ends at depth=1! Increment
-            // nodeStack[0].moveIterator, and suddenly the while loop
-            // condition is false.
             nodeStack[depth].moveIterator++;
 
             // If the next depth is not at the depth limit

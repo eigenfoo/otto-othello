@@ -91,7 +91,7 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
     int maxDepth = 64 - board.plies;
     std::pair<int, std::list<int>> bestMove;
 
-    for (int depthLimit = 1; depthLimit < maxDepth; depthLimit++) {
+    for (int depthLimit = 1; depthLimit <= maxDepth; depthLimit++) {
         std::cout << "\tSearching to depth " << depthLimit;
 
         // TODO implement killer move heuristic
@@ -116,6 +116,17 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
     std::cout << "Time elapsed: " << this->stopTimer(startTime) << " sec\n"
         << std::endl;
 
+    /*
+    std::cout << "NODESTACK:" << std::endl;
+    for (int i = 0; i < 64; i++) {
+        std::cout << (this->nodeStack[i].isMaxNode ? 1 : 0) << std::endl;
+        std::cout << (this->nodeStack[i].alpha) << std::endl;
+        std::cout << (this->nodeStack[i].beta) << std::endl;
+        std::cout << (this->nodeStack[i].score) << std::endl;
+        std::cout << std::endl;
+    }
+    */
+
     return bestMove;
 }
 
@@ -137,31 +148,18 @@ float othelloPlayer::stopTimer(
 // Implemented iteratively to avoid recursion overhead
 // Returns move for square -1 if time runs out
 std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
-        othelloBoard &board, int depthLimit,
+        othelloBoard &theBoard, int depthLimit,
         std::chrono::time_point<std::chrono::system_clock> startTime,
         float timeLimit) {
 
-    // FIXME make this to a class variable or global... too much dynamic memory
-    // allocation here
-    // Node stack
-    struct {
-        bool isMaxNode;
-        int alpha;
-        int beta;
-        int score;
-        othelloBoard board;
-        std::map<int, std::list<int>>::iterator moveIterator;
-        std::map<int, std::list<int>>::iterator lastMove;
-    } nodeStack[64];
-
     // Initialize root node
-    nodeStack[0].isMaxNode = true;
-    nodeStack[0].alpha = -infinity;
-    nodeStack[0].beta = infinity;
-    nodeStack[0].score = -infinity;
-    nodeStack[0].board = board;
-    nodeStack[0].moveIterator = nodeStack[0].board.moves.begin();
-    nodeStack[0].lastMove = nodeStack[0].board.moves.end();
+    this->nodeStack[0].isMaxNode = true;
+    this->nodeStack[0].alpha = INT_MIN;
+    this->nodeStack[0].beta = INT_MAX;
+    this->nodeStack[0].score = INT_MIN;
+    this->nodeStack[0].board = theBoard;
+    this->nodeStack[0].moveIterator = this->nodeStack[0].board.moves.begin();
+    this->nodeStack[0].lastMove = this->nodeStack[0].board.moves.end();
 
     int depth = 0;
     int leafScore = 0;
@@ -172,93 +170,123 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
     // FIXME make sure to implement Sable's +/-1 fix
     while (true) {
         // If we can prune, or have evaluated all children
-        if (nodeStack[depth].beta <= nodeStack[depth].alpha
-                || nodeStack[depth].moveIterator == nodeStack[depth].lastMove) {
+        if (this->nodeStack[depth].beta <= this->nodeStack[depth].alpha
+                || this->nodeStack[depth].moveIterator == this->nodeStack[depth].lastMove) {
+
+            std::cout << "1" << std::endl;
 
             if (depth-- == 0) {
-                if (nodeStack[1].score > nodeStack[0].score) {
-                    nodeStack[0].score = nodeStack[1].score;
-                    bestMove = std::prev(nodeStack[0].moveIterator);
+                std::cout << "2" << std::endl;
+                if (this->nodeStack[1].score > this->nodeStack[0].score) {
+                    std::cout << "3" << std::endl;
+                    this->nodeStack[0].score = this->nodeStack[1].score;
+                    bestMove = std::prev(this->nodeStack[0].moveIterator);
                 }
 
-                if (nodeStack[0].score > nodeStack[0].alpha) {
-                    nodeStack[0].alpha = nodeStack[0].score;
+                std::cout << "3.1" << std::endl;
+                std::cout << "0score " << this->nodeStack[0].score << std::endl;
+                std::cout << "0alpha " << this->nodeStack[0].alpha << std::endl;
+
+                // FIXME this causes a problem: comparing two INT_MINs gives a
+                // segfault... and it may not be just this line.
+                if (this->nodeStack[0].score > this->nodeStack[0].alpha) {
+                    std::cout << "4" << std::endl;
+                    this->nodeStack[0].alpha = this->nodeStack[0].score;
                 }
 
                 break;
             }
 
-            if (nodeStack[depth].isMaxNode) {
-                if (nodeStack[depth+1].score > nodeStack[depth].score) {
-                    nodeStack[depth].score = nodeStack[depth+1].score;
+            if (this->nodeStack[depth].isMaxNode) {
+                std::cout << "5" << std::endl;
+                if (this->nodeStack[depth+1].score > this->nodeStack[depth].score) {
+                    std::cout << "6" << std::endl;
+                    this->nodeStack[depth].score = this->nodeStack[depth+1].score;
                     if (depth == 0) {
-                        bestMove = std::prev(nodeStack[0].moveIterator);
+                        std::cout << "7" << std::endl;
+                        bestMove = std::prev(this->nodeStack[0].moveIterator);
                     }
                 }
 
-                if (nodeStack[depth].score > nodeStack[depth].alpha) {
-                    nodeStack[depth].alpha = nodeStack[depth].score;
+                if (this->nodeStack[depth].score > this->nodeStack[depth].alpha) {
+                    std::cout << "8" << std::endl;
+                    this->nodeStack[depth].alpha = this->nodeStack[depth].score;
                 }
             }
             else {
-                if (nodeStack[depth+1].score < nodeStack[depth].score) {
-                    nodeStack[depth].score = nodeStack[depth+1].score;
+                std::cout << "9" << std::endl;
+                if (this->nodeStack[depth+1].score < this->nodeStack[depth].score) {
+                    std::cout << "10" << std::endl;
+                    this->nodeStack[depth].score = this->nodeStack[depth+1].score;
                 }
 
-                if (nodeStack[depth].score < nodeStack[depth].beta) {
-                    nodeStack[depth].beta = nodeStack[depth].score;
+                if (this->nodeStack[depth].score < this->nodeStack[depth].beta) {
+                    std::cout << "11" << std::endl;
+                    this->nodeStack[depth].beta = this->nodeStack[depth].score;
                 }
             }
         }
         else {
+            std::cout << "12" << std::endl;
+
             // Generate next node, increment moveIterator
-            nodeStack[depth+1].board = nodeStack[depth].board;
-            nodeStack[depth+1].board.updateBoard(
-                    (nodeStack[depth].isMaxNode ? this->color : oppColor),
-                    *nodeStack[depth].moveIterator);
-            nodeStack[depth].moveIterator++;
+            this->nodeStack[depth+1].board = this->nodeStack[depth].board;
+            this->nodeStack[depth+1].board.updateBoard(
+                    (this->nodeStack[depth].isMaxNode ? this->color : oppColor),
+                    *this->nodeStack[depth].moveIterator);
+            this->nodeStack[depth].moveIterator++;
 
             // If the next depth is not at the depth limit
             if (depth + 1 < depthLimit) {
+                std::cout << "13" << std::endl;
                 depth++;
 
                 // Initialize next node in stack
-                nodeStack[depth].isMaxNode = !nodeStack[depth-1].isMaxNode;
-                nodeStack[depth].score =
-                    (nodeStack[depth].isMaxNode ? -infinity : infinity);
-                nodeStack[depth].alpha = nodeStack[depth-1].alpha;
-                nodeStack[depth].beta = nodeStack[depth-1].beta;
-                nodeStack[depth].board.findLegalMoves(
-                        (nodeStack[depth].isMaxNode ? this->color : oppColor),
-                        &nodeStack[depth].board.moves);
-                nodeStack[depth].moveIterator =
-                    nodeStack[depth].board.moves.begin();
-                nodeStack[depth].lastMove = nodeStack[depth].board.moves.end();
+                this->nodeStack[depth].isMaxNode = !this->nodeStack[depth-1].isMaxNode;
+                this->nodeStack[depth].score =
+                    (this->nodeStack[depth].isMaxNode ? INT_MIN : INT_MAX);
+                this->nodeStack[depth].alpha = this->nodeStack[depth-1].alpha;
+                this->nodeStack[depth].beta = this->nodeStack[depth-1].beta;
+                this->nodeStack[depth].board.findLegalMoves(
+                        (this->nodeStack[depth].isMaxNode ? this->color : oppColor),
+                        &this->nodeStack[depth].board.moves);
+                this->nodeStack[depth].moveIterator =
+                    this->nodeStack[depth].board.moves.begin();
+                this->nodeStack[depth].lastMove = this->nodeStack[depth].board.moves.end();
             }
             else {
+                std::cout << "14" << std::endl;
+
                 // The node is a leaf: evaluate heuristic and update values
                 // TODO change this to heuristic.evaluate once alphabeta is done
-                leafScore = this->heuristic.utility(nodeStack[depth+1].board);
+                leafScore = this->heuristic.utility(this->nodeStack[depth+1].board);
 
-                if (nodeStack[depth].isMaxNode) {
-                    if (leafScore > nodeStack[depth].score) {
-                        nodeStack[depth].score = leafScore;
+                if (this->nodeStack[depth].isMaxNode) {
+                    std::cout << "15" << std::endl;
+                    if (leafScore > this->nodeStack[depth].score) {
+                        std::cout << "16" << std::endl;
+                        this->nodeStack[depth].score = leafScore;
                         if (depth == 0) {
-                            bestMove = std::prev(nodeStack[0].moveIterator);
+                            std::cout << "17" << std::endl;
+                            bestMove = std::prev(this->nodeStack[0].moveIterator);
                         }
                     }
 
-                    if (nodeStack[depth].score > nodeStack[depth].alpha) {
-                        nodeStack[depth].alpha = nodeStack[depth].score;
+                    if (this->nodeStack[depth].score > this->nodeStack[depth].alpha) {
+                        std::cout << "18" << std::endl;
+                        this->nodeStack[depth].alpha = this->nodeStack[depth].score;
                     }
                 }
                 else {
-                    if (leafScore < nodeStack[depth].score) {
-                        nodeStack[depth].score = leafScore;
+                    std::cout << "19" << std::endl;
+                    if (leafScore < this->nodeStack[depth].score) {
+                        std::cout << "20" << std::endl;
+                        this->nodeStack[depth].score = leafScore;
                     }
 
-                    if (nodeStack[depth].score < nodeStack[depth].beta) {
-                            nodeStack[depth].beta = nodeStack[depth].score;
+                    if (this->nodeStack[depth].score < this->nodeStack[depth].beta) {
+                        std::cout << "21" << std::endl;
+                        this->nodeStack[depth].beta = this->nodeStack[depth].score;
                     }
                 }
             }

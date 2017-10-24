@@ -2,6 +2,7 @@
 #define PLAYER_HPP
 
 #include <chrono>
+#include <climits>
 #include <iterator>
 #include "heuristic.hpp"
 #include "board.hpp"
@@ -17,7 +18,18 @@ class othelloPlayer {
                 bool &pass);
 
     private:
-        const static long infinity = 2147483647;
+        struct node {
+            bool isMaxNode;
+            int alpha;
+            int beta;
+            int score;
+            othelloBoard board;
+            std::map<int, std::list<int>>::iterator moveIterator;
+            std::map<int, std::list<int>>::iterator lastMove;
+        };
+        
+        node nodeStack[64];
+
         othelloHeuristic heuristic;
 
         // Prompts user for next move
@@ -40,7 +52,7 @@ class othelloPlayer {
         // Implemented using a stack to avoid recursion overhead
         // Returns move for square -1 if time runs out
         std::pair<int, std::list<int>> depthLimitedAlphaBeta(
-                othelloBoard &board, int depthLimit,
+                othelloBoard &theBoard, int depthLimit,
                 std::chrono::time_point<std::chrono::system_clock> startTime,
                 float timeLimit);
 };

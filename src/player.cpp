@@ -89,6 +89,7 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
     // Search by iterative deepening
     std::cout << "Searching game tree..." << std::endl;
     int maxDepth = 64 - board.plies;
+    std::cout << "maxDepth = " << maxDepth << std::endl;
     std::pair<int, std::list<int>> bestMove;
 
     for (int depthLimit = 1; depthLimit <= maxDepth; depthLimit++) {
@@ -188,7 +189,8 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                 std::cout << "0alpha " << this->nodeStack[0].alpha << std::endl;
 
                 // FIXME this causes a problem: comparing two INT_MINs gives a
-                // segfault... and it may not be just this line.
+                // segfault... and it may not be just this line. However,
+                // comparing anything else is okay...
                 if (this->nodeStack[0].score > this->nodeStack[0].alpha) {
                     std::cout << "4" << std::endl;
                     this->nodeStack[0].alpha = this->nodeStack[0].score;

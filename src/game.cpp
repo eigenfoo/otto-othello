@@ -169,6 +169,8 @@ void othelloGame::checkGameOver() {
     else {
         this->passes[1] = this->passes[0];
         this->passes[0] = false;
+        // FIXME don't keep track of plies! keep track of discs on the board.
+        // I.e. if we passed, do not increment "plies"...
         this->board.plies++;
     }
 }

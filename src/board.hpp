@@ -16,7 +16,7 @@ class othelloBoard {
         // positions[i] is 1 for a black disc, 2 for a white disc
         std::vector<int> positions;
 
-        int plies = 0;
+        int discsOnBoard = 0;
         float timeLimit = 0.0;
 
         // moves is a hash table specifying all possible moves from the

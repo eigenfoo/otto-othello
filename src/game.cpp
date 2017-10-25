@@ -68,7 +68,7 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer,
             idx++;
         }
     }
-    this->board.plies = 64 - std::count(setup.begin(), setup.end(), 0);
+    this->board.discsOnBoard = 64 - std::count(setup.begin(), setup.end(), 0);
     this->board.positions.swap(setup);
 
     // Initialize players
@@ -167,11 +167,12 @@ void othelloGame::checkGameOver() {
         this->gameOver = true;
     }
     else {
+        if (!this->passes[0]) {
+            this->board.discsOnBoard++;
+        }
+
         this->passes[1] = this->passes[0];
         this->passes[0] = false;
-        // FIXME don't keep track of plies! keep track of discs on the board.
-        // I.e. if we passed, do not increment "plies"...
-        this->board.plies++;
     }
 }
 

@@ -88,7 +88,7 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
 
     // Search by iterative deepening
     std::cout << "Searching game tree..." << std::endl;
-    int maxDepth = 64 - board.plies;
+    int maxDepth = 64 - board.discsOnBoard;
     std::cout << "maxDepth = " << maxDepth << std::endl;
     std::pair<int, std::list<int>> bestMove;
 

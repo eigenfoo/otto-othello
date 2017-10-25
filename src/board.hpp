@@ -13,7 +13,7 @@ class othelloBoard {
     public:
         // positions specifies all pieces on the board. Squares on the
         // board are indexed from 0 to 63, left to right, top to bottom.
-        // positions[i] is 1 for a black disc, 2 for a white disc
+        // positions[i] is 1 for a black disc, -1 for a white disc
         std::vector<int> positions;
 
         int discsOnBoard = 0;

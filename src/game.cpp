@@ -10,16 +10,16 @@ void othelloGame::newGame(bool blackComputer, bool whiteComputer,
         float timeLimit) {
     // Initialize board
     std::vector<int> setup(64, 0);
-    setup[27] = 2;
+    setup[27] = -1;
     setup[28] = 1;
     setup[35] = 1;
-    setup[36] = 2;
+    setup[36] = -1;
     this->board.positions.swap(setup);
 
     // Initialize players
     this->blackPlayer.color = 1;
     this->blackPlayer.computer = blackComputer;
-    this->whitePlayer.color = 2;
+    this->whitePlayer.color = -1;
     this->whitePlayer.computer = whiteComputer;
 
     // Initialize player to move
@@ -53,7 +53,7 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer,
                 setup[idx] = 1;
             }
             else if (ch == '2') {
-                setup[idx] = 2;
+                setup[idx] = -1;
             }
             else if (ch == '0') {
                 setup[idx] = 0;
@@ -74,7 +74,7 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer,
     // Initialize players
     this->blackPlayer.color = 1;
     this->blackPlayer.computer = blackComputer;
-    this->whitePlayer.color = 2;
+    this->whitePlayer.color = -1;
     this->whitePlayer.computer = whiteComputer;
 
     // Load player to move
@@ -84,7 +84,7 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer,
             this->toMove = 1;
         }
         else if (ch == '2') {
-            this->toMove = 2;
+            this->toMove = -1;
         }
         else {
             std::cout << "Player to move must be 1 (black) or 2 (white)"
@@ -131,7 +131,7 @@ void othelloGame::move(int color) {
         move = this->blackPlayer.move(this->board, this->board.moves,
                 this->board.passes[0]);
     } 
-    else if (color == 2) {
+    else if (color == -1) {
         std::cout << "White to move" << std::endl;
         move = this->whitePlayer.move(this->board, this->board.moves,
                 this->board.passes[0]);
@@ -148,7 +148,7 @@ void othelloGame::checkGameOver() {
         int blackCount = std::count(this->board.positions.begin(),
                 this->board.positions.end(), 1);
         int whiteCount = std::count(this->board.positions.begin(),
-                this->board.positions.end(), 2);
+                this->board.positions.end(), -1);
 
         this->board.displayBoard(1);
 

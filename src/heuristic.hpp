@@ -1,26 +1,39 @@
 #ifndef HEURISTIC_HPP
 #define HEURISTIC_HPP
 
-/* References:
- * http://mkorman.org/othello.pdf
- * https://www.tjhsst.edu/~rlatimer/techlab10/Per5/FourthQuarter/ChenPaperQ4-10.pdf
- */
-
+#include <numeric>
 #include "board.hpp"
 
 class othelloHeuristic {
-    int heuristicScore = 0;
+    int discDifferenceScore = 0;
+    int mobilityScore = 0;
+    int stabilityScore = 0;
+    int parityScore = 0;
+
+    // Dummy ints
+    int foo = 0, bar = 0;
+
+    std::vector<int> weights = {
+         100, -100, 100,  50,  50, 100, -100,  100,
+        -100, -200, -50, -50, -50, -50, -200, -100,
+         100,  -50, 100,   0,   0, 100,  -50,  100,
+          50,  -50,   0,   0,   0,   0,  -50,   50,
+          50,  -50,   0,   0,   0,   0,  -50,   50,
+         100,  -50, 100,   0,   0, 100,  -50,  100,
+        -100, -200, -50, -50, -50, -50, -200, -100,
+         100, -100, 100,  50,  50, 100, -100,  100,
+    };
 
     public:
-        int utility(othelloBoard &board);
-        int evaluate(othelloBoard &board, int color);
+    int evaluate(othelloBoard &board, int color);
 
     private:
-        int discDifference(othelloBoard &board);
-        int mobility(othelloBoard &board);
-        int stability(othelloBoard &board);
-        int parity(othelloBoard &board, int &color);
-        int boardWeights(othelloBoard &board, int &color);
+    int utility(othelloBoard &board);
+    int discDifference(othelloBoard &board);
+    int mobility(othelloBoard &board, int &color);
+    int stability(othelloBoard &board);
+    int parity(othelloBoard &board, int &color);
+    int squareWeights(othelloBoard &board);
 };
 
 #endif // HEURISTIC_HPP

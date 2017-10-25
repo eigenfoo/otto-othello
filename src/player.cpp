@@ -152,7 +152,6 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
 
     int depth = 0;
     int leafScore = 0;
-    int oppColor = (this->color == 1 ? 2 : 1);
     std::map<int, std::list<int>>::iterator bestMove =
         this->nodeStack[0].board.moves.begin();
 
@@ -202,7 +201,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
             // Generate next node, increment moveIterator
             this->nodeStack[depth+1].board = this->nodeStack[depth].board;
             this->nodeStack[depth+1].board.updateBoard(
-                    (this->nodeStack[depth].isMaxNode ? this->color : oppColor),
+                    (this->nodeStack[depth].isMaxNode ? this->color : -this->color),
                     *this->nodeStack[depth].moveIterator);
             this->nodeStack[depth].moveIterator++;
 
@@ -217,7 +216,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                 this->nodeStack[depth].alpha = this->nodeStack[depth-1].alpha;
                 this->nodeStack[depth].beta = this->nodeStack[depth-1].beta;
                 this->nodeStack[depth].board.findLegalMoves(
-                        (this->nodeStack[depth].isMaxNode ? this->color : oppColor),
+                        (this->nodeStack[depth].isMaxNode ? this->color : -this->color),
                         &this->nodeStack[depth].board.moves);
                 this->nodeStack[depth].moveIterator =
                     this->nodeStack[depth].board.moves.begin();
@@ -225,8 +224,8 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
             }
             else {
                 // The node is a leaf: evaluate heuristic and update values
-                // TODO change this to heuristic.evaluate once alphabeta is done
-                leafScore = this->heuristic.utility(this->nodeStack[depth+1].board);
+                leafScore = this->heuristic.evaluate(
+                        this->nodeStack[depth+1].board, this->color);
 
                 if (this->nodeStack[depth].isMaxNode) {
                     if (leafScore > this->nodeStack[depth].score) {

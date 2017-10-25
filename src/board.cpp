@@ -5,7 +5,7 @@ othelloBoard::othelloBoard() {
     this->positions.resize(64, 0);
 }
 
-// Display board: color is 1 for black, 2 for white
+// Display board: color is 1 for black, -1 for white
 void othelloBoard::displayBoard(int color) {
     std::cout << "    A B C D E F G H" << std::endl;
     int row = 1;
@@ -19,7 +19,7 @@ void othelloBoard::displayBoard(int color) {
                 // Black disc followed by green space
                 std::cout << "\033[48;5;34m\033[38;5;232m\u2022 \033[0m";
             }
-            else if (this->positions[j] == 2) {
+            else if (this->positions[j] == -1) {
                 // White disc followed by green space
                 std::cout << "\033[48;5;34m\033[38;5;256m\u2022 \033[0m";
             }
@@ -27,7 +27,7 @@ void othelloBoard::displayBoard(int color) {
                 // Black x followed by green space
                 std::cout << "\033[48;5;34m\033[38;5;232m\u2613 \033[0m";
             } 
-            else if (this->moves.find(j) != this->moves.end() && color == 2) {
+            else if (this->moves.find(j) != this->moves.end() && color == -1) {
                 // White x followed by green space
                 std::cout << "\033[48;5;34m\033[38;5;256m\u2613 \033[0m";
             }
@@ -104,7 +104,6 @@ void othelloBoard::findLegalMoveInDirection(int &disc, int &color, int direction
     std::pair<int, std::list<int>> legalMove;
     std::list<int> flippedDiscs;
     int currentSquare = 0;
-    int oppColor = (color == 1) ? 2 : 1;
     int row1 = 0, col1 = 0, row2 = 0, col2 = 0;
 
     for (int i = disc + direction; i < 64 && i > -1; i += direction) {
@@ -122,7 +121,7 @@ void othelloBoard::findLegalMoveInDirection(int &disc, int &color, int direction
                 (currentSquare == 0 && flippedDiscs.empty())) {
             break;
         }
-        else if (currentSquare == oppColor) {
+        else if (currentSquare == -color) {
             flippedDiscs.push_front(i);
             continue;
         }

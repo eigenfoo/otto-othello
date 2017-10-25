@@ -17,11 +17,11 @@ int main() {
     initializeGame(newGame, game, blackComputer, whiteComputer, timeLimit);
 
     // Play game
-    if (game.toMove == 2) {
-        game.board.findLegalMoves(2, &game.board.moves);
-        game.board.displayBoard(2);
+    if (game.toMove == -1) {
+        game.board.findLegalMoves(-1, &game.board.moves);
+        game.board.displayBoard(-1);
         game.board.displayLegalMoves();
-        game.move(2);
+        game.move(-1);
 
         game.checkGameOver();
     }
@@ -38,10 +38,10 @@ int main() {
             break;
         }
 
-        game.board.findLegalMoves(2, &game.board.moves);
-        game.board.displayBoard(2);
+        game.board.findLegalMoves(-1, &game.board.moves);
+        game.board.displayBoard(-1);
         game.board.displayLegalMoves();
-        game.move(2);
+        game.move(-1);
         game.checkGameOver();
     }
 
@@ -82,7 +82,7 @@ void initializeGame(int choice, othelloGame &game,
         bool &blackComputer, bool &whiteComputer, float &timeLimit) {
     if (choice == 1) {
         blackComputer = promptAIPlayer(1);
-        whiteComputer = promptAIPlayer(2);
+        whiteComputer = promptAIPlayer(-1);
 
         if (blackComputer || whiteComputer) {
             timeLimit = promptAITimeLimit();
@@ -97,7 +97,7 @@ void initializeGame(int choice, othelloGame &game,
         std::cout << std::endl;
 
         blackComputer = promptAIPlayer(1);
-        whiteComputer = promptAIPlayer(2);
+        whiteComputer = promptAIPlayer(-1);
 
         game.loadGame(fileName, blackComputer, whiteComputer);
     }

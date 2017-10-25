@@ -19,6 +19,10 @@ class othelloBoard {
         int discsOnBoard = 0;
         float timeLimit = 0.0;
 
+        // passes[0] and passes[1] are true if the most recent/second most
+        // recent ply was a pass, resp.
+        bool passes[2] = {false, false};
+
         // moves is a hash table specifying all possible moves from the
         // current board position. Possible moves are keys, and a list of
         // all pieces to be flipped are values.
@@ -46,6 +50,8 @@ class othelloBoard {
 
         // Update board after a move
         void updateBoard(int color, std::pair<int, std::list<int>> move);
+
+        bool terminalState();
 
     private: 
         // Helper function to convert board square index to coordinate

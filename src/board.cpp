@@ -127,12 +127,22 @@ void othelloBoard::findLegalMoveInDirection(int &disc, int &color, int direction
             continue;
         }
         // If we see an empty square, it is a legal move: insert it into the
-        // moves hash table. Second condition is to resolve edge case of
+        // moves hash table.
+        // NB: we must check to see if the move is already in the map.
+        // Second condition is to resolve edge case of
         // disc immediately adjacent to original disc.
         else if (currentSquare == 0 && !flippedDiscs.empty()) {
-            legalMove.first = i;
-            legalMove.second = flippedDiscs;
-            pMoves->insert(legalMove);
+            std::map<int, std::list<int>>::iterator it = pMoves->find(i);
+
+            if (it != pMoves->end()) {
+                it->second.merge(flippedDiscs);
+            }
+            else {
+                legalMove.first = i;
+                legalMove.second = flippedDiscs;
+                pMoves->insert(legalMove);
+            }
+
             break;
         }
     }
@@ -147,6 +157,14 @@ void othelloBoard::updateBoard(int color, std::pair<int, std::list<int>> move) {
     for (auto disc : flippedDiscs) {
         this->positions[disc] = color;
     }
+}
+
+// Checks if game is a terminal state
+bool othelloBoard::terminalState() {
+    if (this->passes[0] && this->passes[1]) {
+        return true;
+    }
+    return false;
 }
 
 // Helper function to convert board square index to coordinates

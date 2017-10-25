@@ -1,6 +1,6 @@
 #include "heuristic.hpp"
 
-int othelloHeuristic::utility(const othelloBoard &board) {
+int othelloHeuristic::utility(othelloBoard &board) {
     int blackCount = std::count(board.positions.begin(),
             board.positions.end(), 1);
     int whiteCount = std::count(board.positions.begin(),
@@ -9,11 +9,17 @@ int othelloHeuristic::utility(const othelloBoard &board) {
     return blackCount - whiteCount;
 }
 
-int othelloHeuristic::evaluate(const othelloBoard &board, int color) {
-    return discDifference(board);
+int othelloHeuristic::evaluate(othelloBoard &board, int color) {
+    if (board.terminalState()) {
+        return utility(board);
+    }
+    else {
+        this->heuristicScore = discDifference(board);
+        return this->heuristicScore;
+    }
 }
 
-int othelloHeuristic::discDifference(const othelloBoard &board) {
+int othelloHeuristic::discDifference(othelloBoard &board) {
     int score = 0;
     int blackCount = std::count(board.positions.begin(),
             board.positions.end(), 1); 
@@ -30,14 +36,29 @@ int othelloHeuristic::discDifference(const othelloBoard &board) {
     return score;
 }
 
-int othelloHeuristic::mobility(const othelloBoard &board) {
+int othelloHeuristic::mobility(othelloBoard &board) {
     return 0;
 }
 
-int othelloHeuristic::stability(const othelloBoard &board) {
+int othelloHeuristic::stability(othelloBoard &board) {
     return 0;
 }
 
-int othelloHeuristic::parity(const othelloBoard &board, int &color) {
+int othelloHeuristic::parity(othelloBoard &board, int &color) {
+    return 0;
+}
+
+int othelloHeuristic::boardWeights(othelloBoard &board, int &color) {
+    std::vector<int> boardWeights = {
+         100, -100, 100,  50,  50, 100, -100,  100,
+        -100, -200, -50, -50, -50, -50, -200, -100,
+         100,  -50, 100,   0,   0, 100,  -50,  100,
+          50,  -50,   0,   0,   0,   0,  -50,   50,
+          50,  -50,   0,   0,   0,   0,  -50,   50,
+         100,  -50, 100,   0,   0, 100,  -50,  100,
+        -100, -200, -50, -50, -50, -50, -200, -100,
+         100, -100, 100,  50,  50, 100, -100,  100,
+    };
+
     return 0;
 }

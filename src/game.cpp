@@ -129,22 +129,22 @@ void othelloGame::move(int color) {
     if (color == 1) {
         std::cout << "Black to move" << std::endl;
         move = this->blackPlayer.move(this->board, this->board.moves,
-                this->passes[0]);
+                this->board.passes[0]);
     } 
     else if (color == 2) {
         std::cout << "White to move" << std::endl;
         move = this->whitePlayer.move(this->board, this->board.moves,
-                this->passes[0]);
+                this->board.passes[0]);
     }
 
-    if (!this->passes[0]) {
+    if (!this->board.passes[0]) {
         this->board.updateBoard(color, move);
     }
 }
 
 // Update status of the game
 void othelloGame::checkGameOver() {
-    if (this->passes[0] && this->passes[1]) {
+    if (this->board.passes[0] && this->board.passes[1]) {
         int blackCount = std::count(this->board.positions.begin(),
                 this->board.positions.end(), 1);
         int whiteCount = std::count(this->board.positions.begin(),
@@ -167,19 +167,11 @@ void othelloGame::checkGameOver() {
         this->gameOver = true;
     }
     else {
-        if (!this->passes[0]) {
+        if (!this->board.passes[0]) {
             this->board.discsOnBoard++;
         }
 
-        this->passes[1] = this->passes[0];
-        this->passes[0] = false;
+        this->board.passes[1] = this->board.passes[0];
+        this->board.passes[0] = false;
     }
-}
-
-// Checks if game is a terminal state
-bool othelloGame::terminalState() {
-    if (this->passes[0] && this->passes[1]) {
-        return true;
-    }
-    return false;
 }

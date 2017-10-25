@@ -15,10 +15,6 @@ class othelloGame {
         int toMove = 1;
         bool gameOver = false;
 
-        // passes[0] and passes[1] are true if the most recent/second most
-        // recent ply was a pass, resp.
-        bool passes[2] = {false, false};
-
         // Constructor
         othelloGame();
 
@@ -36,9 +32,6 @@ class othelloGame {
 
         // Update status of the game
         void checkGameOver();
-
-        // Checks if game is a terminal state
-        bool terminalState();
 };
 
 #endif // GAME_HPP

@@ -9,15 +9,18 @@
 #include "board.hpp"
 
 class othelloHeuristic {
+    int heuristicScore = 0;
+
     public:
-        int utility(const othelloBoard &board);
-        int evaluate(const othelloBoard &board, int color);
+        int utility(othelloBoard &board);
+        int evaluate(othelloBoard &board, int color);
 
     private:
-        int discDifference(const othelloBoard &board);
-        int mobility(const othelloBoard &board);
-        int stability(const othelloBoard &board);
-        int parity(const othelloBoard &board, int &color);
+        int discDifference(othelloBoard &board);
+        int mobility(othelloBoard &board);
+        int stability(othelloBoard &board);
+        int parity(othelloBoard &board, int &color);
+        int boardWeights(othelloBoard &board, int &color);
 };
 
 #endif // HEURISTIC_HPP

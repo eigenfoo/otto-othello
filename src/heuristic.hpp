@@ -10,10 +10,7 @@ class othelloHeuristic {
     int stabilityScore = 0;
     int parityScore = 0;
 
-    // Dummy ints
-    int foo = 0, bar = 0;
-
-    std::vector<int> weights = {
+    const std::vector<int> weights = {
          100, -100, 100,  50,  50, 100, -100,  100,
         -100, -200, -50, -50, -50, -50, -200, -100,
          100,  -50, 100,   0,   0, 100,  -50,  100,
@@ -23,6 +20,10 @@ class othelloHeuristic {
         -100, -200, -50, -50, -50, -50, -200, -100,
          100, -100, 100,  50,  50, 100, -100,  100,
     };
+
+    // Dummy variables
+    int foo = 0, bar = 0;
+    std::map<int, std::list<int>> pMoves;
 
     public:
     int evaluate(othelloBoard &board, int color);

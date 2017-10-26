@@ -1,35 +1,44 @@
 #include "heuristic.hpp"
-// TODO finish heuristic
+// Heuristic is from the perspective that black maximizes
+// TODO the heuristic should change as the game progresses!
 
 int othelloHeuristic::evaluate(othelloBoard &board, int color) {
     if (board.terminalState()) {
-        return utility(board);
+        return 100000*utility(board);
+    }
+
+    this->discDifferenceScore = discDifference(board);
+    this->mobilityScore = mobility(board, color);
+    this->stabilityScore = stability(board);
+    this->parityScore = parity(board, color);
+
+    if (board.discsOnBoard <= 10) {
+        // Opening game
+        return discDifferenceScore + mobilityScore
+            + stabilityScore + parityScore;
+    }
+    else if (board.discsOnBoard >= 50) {
+        // Endgame
+        return discDifferenceScore + mobilityScore
+            + stabilityScore + parityScore;
     }
     else {
-        this->discDifferenceScore = discDifference(board);
-        this->mobilityScore = mobility(board, color);
-        this->stabilityScore = stability(board);
-        this->parityScore = parity(board, color);
-
-        return discDifferenceScore + mobilityScore + stabilityScore + parityScore;
+        //Midgame
+        return discDifferenceScore + mobilityScore
+            + stabilityScore + parityScore;
     }
 }
 
 int othelloHeuristic::utility(othelloBoard &board) {
-    // Number of black discs
-    this->foo = std::count(board.positions.begin(),
-            board.positions.end(), 1);
-    // Number of white discs
-    this->bar = std::count(board.positions.begin(),
-            board.positions.end(), -1);
-
-    return this->foo - this->bar;
+    return std::accumulate(board.positions.begin(), board.positions.end(), 0);
 }
 
+// Relative disc difference between the two players
 int othelloHeuristic::discDifference(othelloBoard &board) {
     // Number of black discs
     this->foo = std::count(board.positions.begin(),
             board.positions.end(), 1);
+
     // Number of white discs
     this->bar = std::count(board.positions.begin(),
             board.positions.end(), -1);
@@ -47,18 +56,17 @@ int othelloHeuristic::discDifference(othelloBoard &board) {
     return this->discDifferenceScore;
 }
 
+// Number of possible moves
 int othelloHeuristic::mobility(othelloBoard &board, int &color) {
-    std::map<int, std::list<int>> pMoves;
-
     // Black mobility
-    board.findLegalMoves(1, &pMoves);
+    board.findLegalMoves(1, &this->pMoves);
     this->foo = pMoves.size();
-
-    pMoves.clear(); // FIXME is this necessary?
+    pMoves.clear();
 
     // White mobility
-    board.findLegalMoves(-1, &pMoves);
+    board.findLegalMoves(-1, &this->pMoves);
     this->bar = pMoves.size();
+    pMoves.clear();
 
     this->mobilityScore = 0;
 
@@ -77,7 +85,7 @@ int othelloHeuristic::stability(othelloBoard &board) {
     return 0;
 }
 
-// Computes who is expected to have the last move in the game
+// Who is expected to have the last move in the game
 int othelloHeuristic::parity(othelloBoard &board, int &color) {
     if (color == 1) {
         if (board.discsOnBoard % 2 == 0) {

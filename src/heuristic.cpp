@@ -48,17 +48,17 @@ int othelloHeuristic::discDifference(othelloBoard &board) {
 }
 
 int othelloHeuristic::mobility(othelloBoard &board, int &color) {
-    std::map<int, std::list<int>> *pMoves = nullptr;
+    std::map<int, std::list<int>> pMoves;
 
     // Black mobility
-    board.findLegalMoves(1, pMoves);
-    this->foo = pMoves->size();
+    board.findLegalMoves(1, &pMoves);
+    this->foo = pMoves.size();
 
-    pMoves->clear(); // FIXME is this necessary?
+    pMoves.clear(); // FIXME is this necessary?
 
     // White mobility
-    board.findLegalMoves(-1, pMoves);
-    this->bar = pMoves->size();
+    board.findLegalMoves(-1, &pMoves);
+    this->bar = pMoves.size();
 
     this->mobilityScore = 0;
 

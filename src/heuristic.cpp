@@ -9,21 +9,30 @@ int othelloHeuristic::evaluate(othelloBoard &board, int color) {
 
     this->discDifferenceScore = discDifference(board);
     this->mobilityScore = mobility(board, color);
+    this->potentialMobilityScore = potentialMobility(board, color);
     this->stabilityScore = stability(board, color);
     this->parityScore = parity(board, color);
 
     if (board.discsOnBoard <= 20) {
         // Opening game
-        return  mobilityScore + stabilityScore + parityScore;
+        return mobilityScore
+            + potentialMobilityScore
+            + stabilityScore
+            + parityScore;
     }
     else if (board.discsOnBoard <= 50) {
         //Midgame
-        return discDifferenceScore + mobilityScore
-            + stabilityScore + parityScore;
+        return discDifferenceScore
+            + mobilityScore
+            + potentialMobilityScore
+            + stabilityScore
+            + parityScore;
     }
     else {
         // Endgame
-        return discDifferenceScore + stabilityScore + parityScore;
+        return discDifferenceScore
+            + stabilityScore
+            + parityScore;
     }
 }
 
@@ -76,6 +85,10 @@ int othelloHeuristic::mobility(othelloBoard &board, int &color) {
     }
 
     return this->mobilityScore;
+}
+
+int othelloHeuristic::potentialMobility(othelloBoard &board, int &color) {
+    return 0;
 }
 
 // Computes a lower bound on the number of stable discs

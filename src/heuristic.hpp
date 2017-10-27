@@ -8,6 +8,7 @@
 class othelloHeuristic {
     int discDifferenceScore = 0;
     int mobilityScore = 0;
+    int potentialMobilityScore = 0;
     int stabilityScore = 0;
     std::unordered_set<int> stableDiscs;
     int parityScore = 0;
@@ -34,6 +35,7 @@ class othelloHeuristic {
     int utility(othelloBoard &board);
     int discDifference(othelloBoard &board);
     int mobility(othelloBoard &board, int &color);
+    int potentialMobility(othelloBoard &board, int &color);
     int stability(othelloBoard &board, int &color);
     void stableDiscsFromCorner(othelloBoard &board, int corner,
             int &color);

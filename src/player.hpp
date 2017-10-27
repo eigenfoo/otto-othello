@@ -27,7 +27,7 @@ class othelloPlayer {
             std::map<int, std::list<int>>::iterator moveIterator;
             std::map<int, std::list<int>>::iterator lastMove;
         };
-        
+
         node nodeStack[64];
 
         othelloHeuristic heuristic;

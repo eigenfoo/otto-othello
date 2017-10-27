@@ -2,12 +2,14 @@
 #define HEURISTIC_HPP
 
 #include <numeric>
+#include <unordered_set>
 #include "board.hpp"
 
 class othelloHeuristic {
     int discDifferenceScore = 0;
     int mobilityScore = 0;
     int stabilityScore = 0;
+    std::unordered_set<int> stableDiscs;
     int parityScore = 0;
 
     const std::vector<int> weights = {
@@ -32,7 +34,9 @@ class othelloHeuristic {
     int utility(othelloBoard &board);
     int discDifference(othelloBoard &board);
     int mobility(othelloBoard &board, int &color);
-    int stability(othelloBoard &board);
+    int stability(othelloBoard &board, int &color);
+    void stableDiscsFromCorner(othelloBoard &board, int corner,
+            int &color);
     int parity(othelloBoard &board, int &color);
     int squareWeights(othelloBoard &board);
 };

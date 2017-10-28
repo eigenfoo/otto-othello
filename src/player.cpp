@@ -24,9 +24,9 @@ std::pair<int, std::list<int>> othelloPlayer::humanMove(othelloBoard &board,
 
     std::string str;
     std::pair<int, std::list<int>> move;
-    int choice = 0;
+    int moveNum = 0;
+    int coordIndex = -1;
     bool validInput = false;
-    int i = 0;
 
     if (legalMoves.empty()) {
         std::cout << "No legal moves!" << std::endl;
@@ -38,12 +38,18 @@ std::pair<int, std::list<int>> othelloPlayer::humanMove(othelloBoard &board,
     }
 
     do {
-        std::cout << "\tSelect move number: ";
+        std::cout << "\tSelect move number or square coordinate: ";
         std::cin >> str;
-        std::istringstream iss(str);
-        iss >> choice;
 
-        if (!iss.eof() || choice > legalMoves.size() || choice < 1) {
+        coordIndex = coord2index(str);
+        std::istringstream iss(str);
+        iss >> moveNum;
+
+        if (coordIndex != -1 && legalMoves.find(coordIndex) != legalMoves.end()) {
+            std::cout << std::endl;
+            return *legalMoves.find(coordIndex);
+        }
+        else if (!iss.eof() || moveNum > legalMoves.size() || moveNum < 1) {
             std::cout << "\tInvalid input. Please try again.\n" << std::endl;
         }
         else {
@@ -53,15 +59,91 @@ std::pair<int, std::list<int>> othelloPlayer::humanMove(othelloBoard &board,
     }
     while (!validInput);
 
+    int i = 0;
     for (std::pair<int, std::list<int>> keyval : legalMoves) {
         move = keyval;
         i++;
-        if (i == choice) {
+        if (i == moveNum) {
             break;
         }
     }
 
     return move;
+}
+
+int othelloPlayer::coord2index(std::string coord) {
+    if (coord.length() != 2) {
+        return -1;
+    }
+
+    int index = 0;
+    switch(coord.at(0)) {
+        case 'A':
+        case 'a':
+            index = 0;
+            break;
+        case 'B':
+        case 'b':
+            index = 1;
+            break;
+        case 'C':
+        case 'c':
+            index = 2;
+            break;
+        case 'D':
+        case 'd':
+            index = 3;
+            break;
+        case 'E':
+        case 'e':
+            index = 4;
+            break;
+        case 'F':
+        case 'f':
+            index = 5;
+            break;
+        case 'G':
+        case 'g':
+            index = 6;
+            break;
+        case 'H':
+        case 'h':
+            index = 7;
+            break;
+        default:
+            return -1;
+    }
+
+    switch(coord.at(1)) {
+        case '1':
+            index += 0;
+            break;
+        case '2':
+            index += 8;
+            break;
+        case '3':
+            index += 16;
+            break;
+        case '4':
+            index += 24;
+            break;
+        case '5':
+            index += 32;
+            break;
+        case '6':
+            index += 40;
+            break;
+        case '7':
+            index += 48;
+            break;
+        case '8':
+            index += 56;
+            break;
+        default:
+            return -1;
+    }
+
+    return index;
 }
 
 // Driver for the AI algorithm

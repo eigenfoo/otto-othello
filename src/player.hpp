@@ -37,6 +37,8 @@ class othelloPlayer {
         std::pair<int, std::list<int>> humanMove(othelloBoard &board,
                 std::map<int, std::list<int>> &legalMoves, bool &pass);
 
+        int coord2index(std::string coord);
+
         // Driver for the AI algorithm
         std::pair<int, std::list<int>> computerMove(othelloBoard &board,
                 std::map<int, std::list<int>> &legalMoves, bool &pass);

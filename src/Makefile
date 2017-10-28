@@ -6,7 +6,7 @@ LDFLAGS =
 
 SOURCES = othello.cpp game.cpp board.cpp player.cpp heuristic.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
-EXECUTABLE = otto.exe
+EXECUTABLE = othello.exe
 
 all: $(SOURCES) $(EXECUTABLE)
 

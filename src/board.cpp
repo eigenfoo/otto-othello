@@ -51,10 +51,11 @@ void othelloBoard::displayLegalMoves() {
     int moveNum = 1;
     std::list<int> flippedDiscs;
 
+    std::cout << "Legal moves:" << std::endl;
+
     for (auto keyval : this->moves) {
         index2coord(keyval.first, colNum, rowNum);
-        std::cout << "Legal move " << moveNum++ << ") "
-            << colCoord[colNum] << rowCoord[rowNum];
+        std::cout << "\t" << moveNum++ << "\t" << colCoord[colNum] << rowCoord[rowNum];
 
         flippedDiscs = keyval.second;
         std::cout << " will flip: ";

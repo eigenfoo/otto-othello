@@ -25,18 +25,22 @@ int othelloHeuristic::evaluate(othelloBoard &board, int color) {
         discDifferenceScore = discDifference(board, color);
         mobilityScore = mobility(board, color);
         squareWeightsScore = squareWeights(board, color);
+        parityScore = parity(board);
 
-        return discDifferenceScore
+        return 10*discDifferenceScore
             + 10*mobilityScore
             + 20*squareWeightsScore
+            + 80*parityScore
             + 1000*cornerScore
             + 1000*stabilityScore;
     }
     else {
         discDifferenceScore = discDifference(board, color);
+        parityScore = parity(board);
 
         // Endgame
         return 500*discDifferenceScore
+            + 500*parityScore
             + 1000*cornerScore
             + 1000*stabilityScore;
     }
@@ -167,6 +171,17 @@ void othelloHeuristic::stableDiscsFromCorner(othelloBoard &board, int corner,
         else {
             break;
         }
+    }
+}
+
+int othelloHeuristic::parity(othelloBoard &board) {
+    int squaresRemaining = 64 - board.discsOnBoard;
+
+    if (squaresRemaining % 2 == 0) {
+        return -1;
+    }
+    else {
+        return 1;
     }
 }
 

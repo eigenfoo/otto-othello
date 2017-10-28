@@ -156,7 +156,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         this->nodeStack[0].board.moves.begin();
 
     // While we have not evaluated all the root's children
-    // FIXME make sure to implement Sable's +/-1 fix
+    // FIXME implement the +/-1 fix
     while (true) {
         // If we can prune, or have evaluated all children
         if (this->nodeStack[depth].beta <= this->nodeStack[depth].alpha

@@ -16,7 +16,7 @@ class othelloBoard {
         // positions[i] is 1 for a black disc, -1 for a white disc
         std::vector<int> positions;
 
-        int discsOnBoard = 0;
+        int discsOnBoard = 4;
         float timeLimit = 0.0;
 
         // passes[0] and passes[1] are true if the most recent/second most

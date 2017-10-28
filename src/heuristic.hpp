@@ -5,6 +5,7 @@
 #include <unordered_set>
 #include "board.hpp"
 
+
 class othelloHeuristic {
     int discDifferenceScore = 0;
     int mobilityScore = 0;
@@ -12,17 +13,6 @@ class othelloHeuristic {
     int stabilityScore = 0;
     std::unordered_set<int> stableDiscs;
     int parityScore = 0;
-
-    const std::vector<int> weights = {
-         100, -100, 100,  50,  50, 100, -100,  100,
-        -100, -200, -50, -50, -50, -50, -200, -100,
-         100,  -50, 100,   0,   0, 100,  -50,  100,
-          50,  -50,   0,   0,   0,   0,  -50,   50,
-          50,  -50,   0,   0,   0,   0,  -50,   50,
-         100,  -50, 100,   0,   0, 100,  -50,  100,
-        -100, -200, -50, -50, -50, -50, -200, -100,
-         100, -100, 100,  50,  50, 100, -100,  100,
-    };
 
     // Dummy variables
     int foo = 0, bar = 0;

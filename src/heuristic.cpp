@@ -7,47 +7,36 @@ int othelloHeuristic::evaluate(othelloBoard &board, int color) {
         return 100000*utility(board, color);
     }
 
-    stabilityScore = stability(board, color);
-    cornerScore = corners(board, color);
-
     if (board.discsOnBoard <= 20) {
         // Opening game
-        mobilityScore = mobility(board, color);
-        squareWeightsScore = squareWeights(board, color);
-
-        return 10*mobilityScore
-            + 20*squareWeightsScore
-            + 1000*cornerScore
-            + 1000*stabilityScore;
+        return 10*mobility(board, color)
+            + 10*potentialMobility(board, color)
+            + 20*squareWeights(board, color)
+            + 1000*corners(board, color)
+            + 1000*stability(board, color);
     }
     else if (board.discsOnBoard <= 58) {
         //Midgame
-        discDifferenceScore = discDifference(board, color);
-        mobilityScore = mobility(board, color);
-        squareWeightsScore = squareWeights(board, color);
-        parityScore = parity(board);
-
-        return 10*discDifferenceScore
-            + 10*mobilityScore
-            + 20*squareWeightsScore
-            + 80*parityScore
-            + 1000*cornerScore
-            + 1000*stabilityScore;
+        return 10*discDifference(board, color)
+            + 10*mobility(board, color)
+            + 10*potentialMobility(board, color)
+            + 20*squareWeights(board, color)
+            + 80*parity(board)
+            + 1000*corners(board, color)
+            + 1000*stability(board, color);
     }
     else {
-        discDifferenceScore = discDifference(board, color);
-        parityScore = parity(board);
-
         // Endgame
-        return 500*discDifferenceScore
-            + 500*parityScore
-            + 1000*cornerScore
-            + 1000*stabilityScore;
+        return 500*discDifference(board, color)
+            + 500*parity(board)
+            + 1000*corners(board, color)
+            + 1000*stability(board, color);
     }
 }
 
 int othelloHeuristic::utility(othelloBoard &board, int &color) {
-    int util = std::accumulate(board.positions.begin(), board.positions.end(), 0);
+    int util = std::accumulate(board.positions.begin(),
+            board.positions.end(), 0);
 
     if (color == 1) {
         return util; 
@@ -59,11 +48,8 @@ int othelloHeuristic::utility(othelloBoard &board, int &color) {
 
 // Relative disc difference between the two players
 int othelloHeuristic::discDifference(othelloBoard &board, int &color) {
-    // Number of black discs
     int blackCount = std::count(board.positions.begin(),
             board.positions.end(), 1);
-
-    // Number of white discs
     int whiteCount = std::count(board.positions.begin(),
             board.positions.end(), -1);
 
@@ -77,12 +63,10 @@ int othelloHeuristic::discDifference(othelloBoard &board, int &color) {
 
 // Number of possible moves
 int othelloHeuristic::mobility(othelloBoard &board, int &color) {
-    // Black mobility
     board.findLegalMoves(1, &pMoves);
     int blackMoves = pMoves.size();
     pMoves.clear();
 
-    // White mobility
     board.findLegalMoves(-1, &pMoves);
     int whiteMoves = pMoves.size();
     pMoves.clear();
@@ -95,6 +79,99 @@ int othelloHeuristic::mobility(othelloBoard &board, int &color) {
     }
 }
 
+int othelloHeuristic::potentialMobility(othelloBoard &board, int color) {
+    int myPotentialMobility = playerPotentialMobility(board, color);
+    int opponentPotentialMobility = playerPotentialMobility(board, -color);
+
+    return myPotentialMobility - opponentPotentialMobility;
+}
+
+int othelloHeuristic::playerPotentialMobility(othelloBoard &board, int color) {
+    std::vector<int> boardInterior = {18, 19, 20, 21,
+                                      26, 27, 28, 29,
+                                      34, 35, 36, 37,
+                                      42, 43, 44, 45};
+
+    int here = 0, up = 0, down = 0, left = 0, right = 0,
+        upperLeft = 0, upperRight = 0, lowerLeft = 0, lowerRight = 0;
+    int potentialMobility = 0;
+
+    for (int square : boardInterior) {
+        here = board.positions[square];
+        up = board.positions[square-8];
+        down = board.positions[square+8];
+        left = board.positions[square-1];
+        right = board.positions[square+1];
+        upperLeft = board.positions[square-9];
+        upperRight = board.positions[square-7];
+        lowerLeft = board.positions[square+7];
+        lowerRight = board.positions[square+9];
+
+        if (here == -color && up == 0)
+            potentialMobility++;
+        if (here == -color && down == 0)
+            potentialMobility++;
+        if (here == -color && right == 0)
+            potentialMobility++;
+        if (here == -color && right == 0)
+            potentialMobility++;
+        if (here == -color && upperLeft == 0)
+            potentialMobility++;
+        if (here == -color && upperRight == 0)
+            potentialMobility++;
+        if (here == -color && lowerLeft == 0)
+            potentialMobility++;
+        if (here == -color && lowerRight == 0)
+            potentialMobility++;
+    }
+
+    std::vector<int> topRow = {10, 11, 12, 13};
+    for (int square : topRow) {
+        here = board.positions[square];
+        left = board.positions[square-1];
+        right = board.positions[square+1];
+        if (here == -color && left == 0)
+            potentialMobility++;
+        if (here == -color && right == 0)
+            potentialMobility++;
+    }
+
+    std::vector<int> bottomRow = {50, 51, 52, 53};
+    for (int square : bottomRow) {
+        here = board.positions[square];
+        left = board.positions[square-1];
+        right = board.positions[square+1];
+        if (here == -color && left == 0)
+            potentialMobility++;
+        if (here == -color && right == 0)
+            potentialMobility++;
+    }
+
+    std::vector<int> leftColumn = {17, 25, 33, 41};
+    for (int square : leftColumn) {
+        here = board.positions[square];
+        up = board.positions[square-8];
+        down = board.positions[square+8];
+        if (here == -color && up == 0)
+            potentialMobility++;
+        if (here == -color && down == 0)
+            potentialMobility++;
+    }
+
+    std::vector<int> rightColumn = {22, 30, 38, 46};
+    for (int square : leftColumn) {
+        here = board.positions[square];
+        up = board.positions[square-8];
+        down = board.positions[square+8];
+        if (here == -color && up == 0)
+            potentialMobility++;
+        if (here == -color && down == 0)
+            potentialMobility++;
+    }
+
+    return potentialMobility;
+}
+
 // Computes a lower bound on the number of stable discs
 int othelloHeuristic::stability(othelloBoard &board, int color) {
     stableDiscs.clear();
@@ -104,22 +181,21 @@ int othelloHeuristic::stability(othelloBoard &board, int color) {
     stableDiscsFromCorner(board, 56, color);
     stableDiscsFromCorner(board, 63, color);
 
-    int myStable = stableDiscs.size();
+    int myStables = stableDiscs.size();
 
     stableDiscsFromCorner(board, 0, -color);
     stableDiscsFromCorner(board, 7, -color);
     stableDiscsFromCorner(board, 56, -color);
     stableDiscsFromCorner(board, 63, -color);
 
-    int opponentStable = stableDiscs.size();
+    int opponentStables = stableDiscs.size();
 
-    return myStable - opponentStable;
+    return myStables - opponentStables;
 }
 
 // Finds the number of stable discs given a corner
 void othelloHeuristic::stableDiscsFromCorner(othelloBoard &board, int corner,
         int color) {
-
     bool down, right;
     if (corner == 0) {
         down = true;
@@ -157,7 +233,8 @@ void othelloHeuristic::stableDiscsFromCorner(othelloBoard &board, int corner,
             for (int j = i; j != i + vertStop; j+= vertIncr) {
                 // If there is a disc of our color on this square,
                 // and it is not in the set of stable discs
-                if (board.positions[j] == color && stableDiscs.find(j) == stableDiscs.end()) {
+                if (board.positions[j] == color
+                        && stableDiscs.find(j) == stableDiscs.end()) {
                     // Insert it to the set
                     stableDiscs.insert(j);
                 }
@@ -259,12 +336,12 @@ int othelloHeuristic::squareWeights(othelloBoard &board, int &color) {
     }
 
     if (color == 1) {
-        return std::inner_product(board.positions.begin(), board.positions.end(),
-                weights.begin(), 0);
+        return std::inner_product(board.positions.begin(),
+                board.positions.end(), weights.begin(), 0);
     }
     else {
-        return -1*std::inner_product(board.positions.begin(), board.positions.end(),
-                weights.begin(), 0);
+        return -1*std::inner_product(board.positions.begin(),
+                board.positions.end(), weights.begin(), 0);
     }
 }
 

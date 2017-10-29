@@ -2,12 +2,12 @@
 #define DATABASE_HPP
 
 #include <fstream>
-#include <list>
 #include <unordered_map>
+#include "board.hpp"
 
 class database {
     public:
-        std::unordered_map<std::list<int>, int> openingBook = {};
+        std::unordered_map<std::string, int> openingBook = {};
 
         void loadOpenings();
 };

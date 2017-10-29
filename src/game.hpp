@@ -2,7 +2,6 @@
 #define GAME_HPP
 
 #include <string>
-#include <fstream>
 #include "player.hpp"
 #include "board.hpp"
 

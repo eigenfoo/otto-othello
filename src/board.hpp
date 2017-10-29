@@ -6,7 +6,7 @@
 #include <list>
 #include <tuple>
 #include <map>
-#include <algorithm> // Needed for std::count
+#include <algorithm>
 
 class othelloBoard {
     public:

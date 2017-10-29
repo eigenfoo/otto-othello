@@ -6,6 +6,9 @@ void database::loadOpenings() {
 
     while (csv.good()) {
         getline(csv, line);
-    }
+        std::size_t found = str.rfind(key);
+        if (found!=std::string::npos) {
 
+        }
+    }
 }

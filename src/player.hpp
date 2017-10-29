@@ -1,12 +1,14 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
+#include <string>
 #include <array>
 #include <chrono>
 #include <climits>
 #include <iterator>
-#include "heuristic.hpp"
 #include <sstream>
+#include "database.hpp"
+#include "heuristic.hpp"
 
 class othelloPlayer {
     public:

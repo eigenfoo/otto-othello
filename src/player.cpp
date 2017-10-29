@@ -10,7 +10,7 @@ std::pair<int, std::list<int>> othelloPlayer::move(othelloBoard &board,
         moveChoice = this->computerMove(board, legalMoves, pass);
     }
     else {
-        moveChoice = this->humanMove(board, legalMoves, pass);
+        moveChoice = this->humanMove(legalMoves, pass);
     }
 
     return moveChoice;
@@ -18,10 +18,8 @@ std::pair<int, std::list<int>> othelloPlayer::move(othelloBoard &board,
 
 // Prompts user for next move
 // `board` is only necessary for polymorphic `move`...
-std::pair<int, std::list<int>> othelloPlayer::humanMove(othelloBoard &board,
-        std::map<int, std::list<int>> &legalMoves,
-        bool &pass) {
-
+std::pair<int, std::list<int>> othelloPlayer::humanMove(
+        std::map<int, std::list<int>> &legalMoves, bool &pass) {
     std::string str;
     std::pair<int, std::list<int>> move;
     int moveNum = 0;
@@ -176,7 +174,6 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
     for (int depthLimit = 1; depthLimit <= maxDepth; depthLimit++) {
         std::cout << "\tSearching to depth " << depthLimit;
 
-        // TODO implement killer move heuristic
         move = this->depthLimitedAlphaBeta(board, depthLimit, startTime,
                 board.timeLimit);
 
@@ -218,6 +215,7 @@ float othelloPlayer::stopTimer(
 // Performs depth-limited minimax search with alpha-beta pruning
 // Implemented iteratively to avoid recursion overhead
 // Returns move for square -1 if time runs out
+// TODO implement killer move heuristic
 std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         othelloBoard &board, int depthLimit,
         std::chrono::time_point<std::chrono::system_clock> startTime,
@@ -254,6 +252,8 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                     this->nodeStack[0].alpha = this->nodeStack[0].score;
                 }
 
+                //this->killerMoves[1][1] = this->killerMoves[1][0];
+                //this->killerMoves[1][0] = std::prev(this->nodeStack[1].moveIterator)->first;
                 break;
             }
 
@@ -268,6 +268,9 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                 if (this->nodeStack[depth].score > this->nodeStack[depth].alpha) {
                     this->nodeStack[depth].alpha = this->nodeStack[depth].score;
                 }
+
+                //this->killerMoves[depth+1][1] = this->killerMoves[depth+1][0];
+                //this->killerMoves[depth+1][0] = std::prev(this->nodeStack[depth+1].moveIterator)->first;
             }
             else {
                 if (this->nodeStack[depth+1].score < this->nodeStack[depth].score) {

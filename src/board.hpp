@@ -7,7 +7,6 @@
 #include <tuple>
 #include <map>
 #include <algorithm> // Needed for std::count
-#include <sstream> // Needed for humanPlayer and computerPlayer
 
 class othelloBoard {
     public:

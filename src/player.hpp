@@ -1,11 +1,12 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
+#include <array>
 #include <chrono>
 #include <climits>
 #include <iterator>
 #include "heuristic.hpp"
-#include "board.hpp"
+#include <sstream>
 
 class othelloPlayer {
     public:
@@ -28,13 +29,14 @@ class othelloPlayer {
             std::map<int, std::list<int>>::iterator lastMove;
         };
 
-        node nodeStack[64];
+        std::array<node, 64> nodeStack = {};
+        //std::array<std::array<int, 2>, 64> killerMoves = {};
 
         othelloHeuristic heuristic;
 
         // Prompts user for next move
         // `board` is only necessary for polymorphic `move`...
-        std::pair<int, std::list<int>> humanMove(othelloBoard &board,
+        std::pair<int, std::list<int>> humanMove(
                 std::map<int, std::list<int>> &legalMoves, bool &pass);
 
         int coord2index(std::string coord);

@@ -20,8 +20,8 @@ int othelloHeuristic::evaluate(othelloBoard &board, int color) {
         return 10*discDifference(board, color)
             + 10*mobility(board, color)
             + 10*potentialMobility(board, color)
-            + 20*squareWeights(board, color)
-            + 80*parity(board)
+            + 10*squareWeights(board, color)
+            + 100*parity(board)
             + 1000*corners(board, color)
             + 1000*stability(board, color);
     }
@@ -214,8 +214,7 @@ void othelloHeuristic::stableDiscsFromCorner(othelloBoard &board, int corner,
         right = false;
     }
 
-    int horizIncr = 1, horizStop = 7;
-    int vertIncr = 8, vertStop = 56;
+    int horizIncr = 1, horizStop = 7, vertIncr = 8, vertStop = 56;
     if (!right) {
         horizIncr *= -1;
         horizStop *= -1;

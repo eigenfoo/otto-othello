@@ -170,7 +170,7 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
         this->database.openingBook.find(moveHistory);
     if (query != this->database.openingBook.end()) {
         std::cout << "Known opening!" << std::endl;
-        std::cout << "\tComputer takes next move." << std::endl;
+        std::cout << "\tComputer takes next move.\n" << std::endl;
         //std::cout << this->pastMoves << std::endl;
         //std::cout << query->first << std::endl;
         //std::cout << query->second << std::endl;
@@ -248,7 +248,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         this->nodeStack[0].board.moves.begin();
 
     // While we have not evaluated all the root's children
-    // FIXME check the +/-1 fix
+    // FIXME implement the +/-1 fix
     // FIXME check the tiebreaker fix
     while (true) {
         // If we can prune, or have evaluated all children
@@ -278,7 +278,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                 if (this->nodeStack[depth+1].score > this->nodeStack[depth].score
                     || (this->nodeStack[depth+1].score == this->nodeStack[depth].score
                         && rand() % 2 == 0)) {
-                    this->nodeStack[depth].score = this->nodeStack[depth+1].score - 1;
+                    this->nodeStack[depth].score = this->nodeStack[depth+1].score;
                     if (depth == 0) {
                         bestMove = std::prev(this->nodeStack[0].moveIterator);
                     }
@@ -295,7 +295,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
             }
             else {
                 if (this->nodeStack[depth+1].score < this->nodeStack[depth].score) {
-                    this->nodeStack[depth].score = this->nodeStack[depth+1].score + 1;
+                    this->nodeStack[depth].score = this->nodeStack[depth+1].score;
                 }
 
                 if (this->nodeStack[depth].score < this->nodeStack[depth].beta) {

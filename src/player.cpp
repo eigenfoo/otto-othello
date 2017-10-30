@@ -166,7 +166,7 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
     else if (legalMoves.size() == 1) {
         std::cout << "Only one legal move!" << std::endl;
         std::cout << "\tComputer takes only legal move." << std::endl;
-        bestMove = *(legalMoves.begin());
+        bestMove = *legalMoves.begin();
     }
     else if (query != this->database.openingBook.end()) {
         std::cout << "Known opening!" << std::endl;
@@ -207,7 +207,7 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
     int rowNum = 0, colNum = 0;
     std::string colCoord = "ABCDEFGH";
     std::string rowCoord = "12345678";
-    board.index2coord(bestMove.first, rowNum, colNum);
+    board.index2coord(bestMove.first, colNum, rowNum);
     std::cout << "\tComputer takes: " << colCoord[colNum] << rowCoord[rowNum]
         << "\n" << std::endl;
 

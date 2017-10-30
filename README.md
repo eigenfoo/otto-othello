@@ -48,19 +48,21 @@ function, which evaluates the strength and overall desireability of a given
 board position. It is implemented as a linear combination of the following
 statistics, with the weights adapting as the game progresses:
 
-  - Corners (Measures control of the corners. Weighted highly at all times)
+  - Corners (Measures control of the corners. Weighted highly at all times.)
   - Stability (Measures the number of discs that cannot be flipped for the rest
     of the game. For performance reasons, only a lower bound on the number of
-    stable discs is computed. Weighted highly at all times)
-  - Mobility (Measures the number of moves the player is able to make. Has
-    significant weight in the opening game, but diminishes to a negligible
-    weight towards the endgame)
+    stable discs is computed. Weighted highly at all times.)
   - Parity (Measures who is expected to make the last move/ply of the game.
     Has zero weight in the opening, but increases to a very large weight in
-    the endgame)
+    the midgame and endgame.)
   - Disc difference (Measures the difference in the number of discs on the
-    board. Has a moderate weight in the opening and midgame, but increases to a
-    significant weight in the endgame)
+    board. Has a no weight in the opening, but increases to a moderate weight
+    in the midgame, to a significant weight in the endgame.)
+  - Mobility (Measures the number of moves the player is currently able to
+    make. Has significant weight in the opening game, but diminishes to zero
+    weight towards the endgame.)
+  - Potential mobility (Measures the number of moves that the player will be
+    able to make. Weighted identically to mobility.)
   - Square weights (Assigns weights to squares so as to avoid giving the
     opponent a corner. Has moderate weight in the opening and midgame, but has
-    no weight in the endgame)
+    no weight in the endgame.)

@@ -35,7 +35,7 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer,
     std::ifstream ifs(fileName.c_str());
 
     if (!ifs.good()) {
-        std::cout << "File does not exist" << std::endl;
+        std::cout << "File does not exist!" << std::endl;
         return;
     }
 
@@ -59,9 +59,7 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer,
                 setup[idx] = 0;
             }
             else {
-                std::string msg = "Board must be 0, 1, 2 for empty, "
-                    "black and white, separated by spaces";
-                std::cout << msg << std::endl;
+                std::cout << "Invalid file format! Refer to the README." << std::endl;
                 return;
             }
 
@@ -87,14 +85,14 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer,
             this->toMove = -1;
         }
         else {
-            std::cout << "Player to move must be 1 (black) or 2 (white)"
+            std::cout << "Player to move must be 1 (black) or 2 (white)!"
                 << std::endl;
             ifs.close();
             return;
         }
     }
     else {
-        std::cout << "Save file does not specify player to move"
+        std::cout << "Save file does not specify player to move!"
             << std::endl;
         ifs.close();
         return;
@@ -106,14 +104,14 @@ void othelloGame::loadGame(std::string fileName, bool blackComputer,
             this->board.timeLimit = stof(str);
         }
         else {
-            std::cout << "Time limit must be a positive number"
+            std::cout << "Time limit must be a positive number!"
                 << std::endl;
             ifs.close();
             return;
         }
     }
     else {
-        std::cout << "Save file does not specify computer time limit"
+        std::cout << "Save file does not specify computer time limit!"
             << std::endl;
         ifs.close();
         return;

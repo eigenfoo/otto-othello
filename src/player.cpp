@@ -30,7 +30,7 @@ std::pair<int, std::list<int>> othelloPlayer::humanMove(
 
     if (legalMoves.empty()) {
         std::cout << "No legal moves!" << std::endl;
-        std::cout << "\tEnter any string to pass: ";
+        std::cout << "\tEnter any non-empty string to pass: ";
         std::cin >> str;
         std::cout << std::endl;
         pass = true;
@@ -38,7 +38,7 @@ std::pair<int, std::list<int>> othelloPlayer::humanMove(
     }
 
     do {
-        std::cout << "\tSelect move number or square coordinate: ";
+        std::cout << "\tSelect move number/square coordinate: ";
         std::cin >> str;
 
         coordIndex = coord2index(str);
@@ -170,10 +170,7 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
         this->database.openingBook.find(moveHistory);
     if (query != this->database.openingBook.end()) {
         std::cout << "Known opening!" << std::endl;
-        std::cout << "\tComputer takes next move.\n" << std::endl;
-        //std::cout << this->pastMoves << std::endl;
-        //std::cout << query->first << std::endl;
-        //std::cout << query->second << std::endl;
+        std::cout << "\tComputer takes next move from opening book.\n" << std::endl;
         move = *legalMoves.find(query->second);
         return move;
     }
@@ -190,11 +187,11 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
                 board.timeLimit);
 
         if (move.first == -1) {
-            std::cout << "\t\tSearch aborted" << std::endl;
+            std::cout << "\t\tSearch aborted." << std::endl;
             break;
         }
         else {
-            std::cout << "\t\tSearch complete" << std::endl;
+            std::cout << "\t\tSearch complete." << std::endl;
             bestMove = move;
         }
 
@@ -249,8 +246,49 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
 
     // While we have not evaluated all the root's children
     while (true) {
+        // If we have evaluated all children
+        if (this->nodeStack[depth].moveIterator == this->nodeStack[depth].lastMove) {
+            if (depth-- == 0) {
+                if (this->nodeStack[1].score > this->nodeStack[0].score
+                    || (this->nodeStack[1].score == this->nodeStack[0].score
+                        && rand() % 2 == 0)) {
+                    this->nodeStack[0].score = this->nodeStack[1].score;
+                    bestMove = std::prev(this->nodeStack[0].moveIterator);
+                }
+
+                if (this->nodeStack[0].score > this->nodeStack[0].alpha) {
+                    this->nodeStack[0].alpha = this->nodeStack[0].score;
+                }
+
+                break;
+            }
+
+            if (this->nodeStack[depth].isMaxNode) {
+                if (this->nodeStack[depth+1].score > this->nodeStack[depth].score
+                    || (this->nodeStack[depth+1].score == this->nodeStack[depth].score
+                        && rand() % 2 == 0)) {
+                    this->nodeStack[depth].score = this->nodeStack[depth+1].score;
+                    if (depth == 0) {
+                        bestMove = std::prev(this->nodeStack[0].moveIterator);
+                    }
+                }
+
+                if (this->nodeStack[depth].score > this->nodeStack[depth].alpha) {
+                    this->nodeStack[depth].alpha = this->nodeStack[depth].score;
+                }
+            }
+            else {
+                if (this->nodeStack[depth+1].score < this->nodeStack[depth].score) {
+                    this->nodeStack[depth].score = this->nodeStack[depth+1].score;
+                }
+
+                if (this->nodeStack[depth].score < this->nodeStack[depth].beta) {
+                    this->nodeStack[depth].beta = this->nodeStack[depth].score;
+                }
+            }
+        }
         // If we can prune
-        if (this->nodeStack[depth].beta <= this->nodeStack[depth].alpha) {
+        else if (this->nodeStack[depth].beta <= this->nodeStack[depth].alpha) {
             if (depth-- == 0) {
                 if (this->nodeStack[1].score > this->nodeStack[0].score
                     || (this->nodeStack[1].score == this->nodeStack[0].score
@@ -267,9 +305,8 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                 // of a begin() iterator...
                 //this->killerMoves[1][1] = this->killerMoves[1][0];
                 //this->killerMoves[1][0] = std::prev(this->nodeStack[1].moveIterator)->first;
-                break;
-                // continue; FIXME shouldn't it be continue??? it gives a
-                // segfault though
+
+                break; // FIXME should it be break or continue here???
             }
 
             if (this->nodeStack[depth].isMaxNode) {
@@ -294,47 +331,6 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
             else {
                 if (this->nodeStack[depth+1].score < this->nodeStack[depth].score) {
                     this->nodeStack[depth].score = this->nodeStack[depth+1].score + 1;
-                }
-
-                if (this->nodeStack[depth].score < this->nodeStack[depth].beta) {
-                    this->nodeStack[depth].beta = this->nodeStack[depth].score;
-                }
-            }
-        }
-        // If we have evaluated all children
-        else if (this->nodeStack[depth].moveIterator == this->nodeStack[depth].lastMove) {
-            if (depth-- == 0) {
-                if (this->nodeStack[1].score > this->nodeStack[0].score
-                    || (this->nodeStack[1].score == this->nodeStack[0].score
-                        && rand() % 2 == 0)) {
-                    this->nodeStack[0].score = this->nodeStack[1].score;
-                    bestMove = std::prev(this->nodeStack[0].moveIterator);
-                }
-
-                if (this->nodeStack[0].score > this->nodeStack[0].alpha) {
-                    this->nodeStack[0].alpha = this->nodeStack[0].score;
-                }
-
-                break;
-            }
-
-            if (this->nodeStack[depth].isMaxNode) {
-                if (this->nodeStack[depth+1].score > this->nodeStack[depth].score
-                    || (this->nodeStack[depth+1].score == this->nodeStack[depth].score
-                        && rand() % 2 == 0)) {
-                    this->nodeStack[depth].score = this->nodeStack[depth+1].score;
-                    if (depth == 0) {
-                        bestMove = std::prev(this->nodeStack[0].moveIterator);
-                    }
-                }
-
-                if (this->nodeStack[depth].score > this->nodeStack[depth].alpha) {
-                    this->nodeStack[depth].alpha = this->nodeStack[depth].score;
-                }
-            }
-            else {
-                if (this->nodeStack[depth+1].score < this->nodeStack[depth].score) {
-                    this->nodeStack[depth].score = this->nodeStack[depth+1].score;
                 }
 
                 if (this->nodeStack[depth].score < this->nodeStack[depth].beta) {

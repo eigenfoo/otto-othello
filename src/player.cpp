@@ -248,13 +248,9 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         this->nodeStack[0].board.moves.begin();
 
     // While we have not evaluated all the root's children
-    // FIXME implement the +/-1 fix
-    // FIXME check the tiebreaker fix
     while (true) {
-        // If we can prune, or have evaluated all children
-        if (this->nodeStack[depth].beta <= this->nodeStack[depth].alpha
-                || this->nodeStack[depth].moveIterator == this->nodeStack[depth].lastMove) {
-
+        // If we can prune
+        if (this->nodeStack[depth].beta <= this->nodeStack[depth].alpha) {
             if (depth-- == 0) {
                 if (this->nodeStack[1].score > this->nodeStack[0].score
                     || (this->nodeStack[1].score == this->nodeStack[0].score
@@ -272,6 +268,54 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                 //this->killerMoves[1][1] = this->killerMoves[1][0];
                 //this->killerMoves[1][0] = std::prev(this->nodeStack[1].moveIterator)->first;
                 break;
+                // continue; FIXME shouldn't it be continue??? it gives a
+                // segfault though
+            }
+
+            if (this->nodeStack[depth].isMaxNode) {
+                if (this->nodeStack[depth+1].score > this->nodeStack[depth].score
+                    || (this->nodeStack[depth+1].score == this->nodeStack[depth].score
+                        && rand() % 2 == 0)) {
+                    this->nodeStack[depth].score = this->nodeStack[depth+1].score - 1;
+                    if (depth == 0) {
+                        bestMove = std::prev(this->nodeStack[0].moveIterator);
+                    }
+                }
+
+                if (this->nodeStack[depth].score > this->nodeStack[depth].alpha) {
+                    this->nodeStack[depth].alpha = this->nodeStack[depth].score;
+                }
+
+                // FIXME this gives a segfault, probably trying to get std::prev
+                // of a begin() iterator...
+                //this->killerMoves[depth+1][1] = this->killerMoves[depth+1][0];
+                //this->killerMoves[depth+1][0] = std::prev(this->nodeStack[depth+1].moveIterator)->first;
+            }
+            else {
+                if (this->nodeStack[depth+1].score < this->nodeStack[depth].score) {
+                    this->nodeStack[depth].score = this->nodeStack[depth+1].score + 1;
+                }
+
+                if (this->nodeStack[depth].score < this->nodeStack[depth].beta) {
+                    this->nodeStack[depth].beta = this->nodeStack[depth].score;
+                }
+            }
+        }
+        // If we have evaluated all children
+        else if (this->nodeStack[depth].moveIterator == this->nodeStack[depth].lastMove) {
+            if (depth-- == 0) {
+                if (this->nodeStack[1].score > this->nodeStack[0].score
+                    || (this->nodeStack[1].score == this->nodeStack[0].score
+                        && rand() % 2 == 0)) {
+                    this->nodeStack[0].score = this->nodeStack[1].score;
+                    bestMove = std::prev(this->nodeStack[0].moveIterator);
+                }
+
+                if (this->nodeStack[0].score > this->nodeStack[0].alpha) {
+                    this->nodeStack[0].alpha = this->nodeStack[0].score;
+                }
+
+                break;
             }
 
             if (this->nodeStack[depth].isMaxNode) {
@@ -287,11 +331,6 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                 if (this->nodeStack[depth].score > this->nodeStack[depth].alpha) {
                     this->nodeStack[depth].alpha = this->nodeStack[depth].score;
                 }
-
-                // FIXME this gives a segfault, probably trying to get std::prev
-                // of a begin() iterator...
-                //this->killerMoves[depth+1][1] = this->killerMoves[depth+1][0];
-                //this->killerMoves[depth+1][0] = std::prev(this->nodeStack[depth+1].moveIterator)->first;
             }
             else {
                 if (this->nodeStack[depth+1].score < this->nodeStack[depth].score) {

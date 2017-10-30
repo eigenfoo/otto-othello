@@ -1,6 +1,6 @@
 #include "heuristic.hpp"
-// Heuristic is from the perspective that the calling player is max,
-// regardless of the player's color
+// Heuristic is from the perspective that the calling player is the maximizing
+// player, regardless of the player's color
 
 int othelloHeuristic::evaluate(othelloBoard &board, int color) {
     if (board.terminalState()) {
@@ -9,8 +9,8 @@ int othelloHeuristic::evaluate(othelloBoard &board, int color) {
 
     if (board.discsOnBoard <= 20) {
         // Opening game
-        return 10*mobility(board, color)
-            + 10*potentialMobility(board, color)
+        return 2*mobility(board, color)
+            + 2*potentialMobility(board, color)
             + 20*squareWeights(board, color)
             + 1000*corners(board, color)
             + 1000*stability(board, color);
@@ -18,8 +18,8 @@ int othelloHeuristic::evaluate(othelloBoard &board, int color) {
     else if (board.discsOnBoard <= 58) {
         //Midgame
         return 10*discDifference(board, color)
-            + 10*mobility(board, color)
-            + 10*potentialMobility(board, color)
+            + 5*mobility(board, color)
+            + 5*potentialMobility(board, color)
             + 10*squareWeights(board, color)
             + 100*parity(board)
             + 1000*corners(board, color)
@@ -83,7 +83,8 @@ int othelloHeuristic::potentialMobility(othelloBoard &board, int color) {
     int myPotentialMobility = playerPotentialMobility(board, color);
     int opponentPotentialMobility = playerPotentialMobility(board, -color);
 
-    return myPotentialMobility - opponentPotentialMobility;
+    return 100 * (myPotentialMobility - opponentPotentialMobility)
+        / (myPotentialMobility + opponentPotentialMobility + 1);
 }
 
 int othelloHeuristic::playerPotentialMobility(othelloBoard &board, int color) {

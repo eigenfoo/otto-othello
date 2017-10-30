@@ -11,7 +11,7 @@ class othelloHeuristic {
 
     private:
         std::unordered_set<int> stableDiscs;
-        std::map<int, std::list<int>> pMoves;
+        std::unordered_map<int, std::list<int>> pMoves;
 
         int utility(othelloBoard &board, int &color);
         int discDifference(othelloBoard &board, int &color);

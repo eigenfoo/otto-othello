@@ -3,7 +3,7 @@
 
 // Driver for player's move, regardless of player
 std::pair<int, std::list<int>> othelloPlayer::move(othelloBoard &board,
-        std::map<int, std::list<int>> &legalMoves,
+        std::unordered_map<int, std::list<int>> &legalMoves,
         bool &pass, std::string &moveHistory) {
 
     std::pair<int, std::list<int>> moveChoice;
@@ -21,7 +21,7 @@ std::pair<int, std::list<int>> othelloPlayer::move(othelloBoard &board,
 
 // Prompts user for next move
 std::pair<int, std::list<int>> othelloPlayer::humanMove(
-        std::map<int, std::list<int>> &legalMoves, bool &pass) {
+        std::unordered_map<int, std::list<int>> &legalMoves, bool &pass) {
     std::string str;
     std::pair<int, std::list<int>> move;
     int moveNum = 0;
@@ -148,7 +148,7 @@ int othelloPlayer::coord2index(std::string coord) {
 
 // Driver for the AI algorithm
 std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
-        std::map<int, std::list<int>> &legalMoves, bool &pass, std::string &moveHistory) {
+        std::unordered_map<int, std::list<int>> &legalMoves, bool &pass, std::string &moveHistory) {
     std::chrono::time_point<std::chrono::system_clock> startTime =
         this->startTimer();
     std::pair<int, std::list<int>> move;
@@ -237,11 +237,12 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
     this->nodeStack[0].score = INT_MIN;
     this->nodeStack[0].board = board;
     this->nodeStack[0].moveIterator = this->nodeStack[0].board.moves.begin();
+    this->nodeStack[0].prevIterator = this->nodeStack[0].moveIterator;
     this->nodeStack[0].lastMove = this->nodeStack[0].board.moves.end();
 
     int depth = 0;
     int leafScore = 0;
-    std::map<int, std::list<int>>::iterator bestMove =
+    std::unordered_map<int, std::list<int>>::iterator bestMove =
         this->nodeStack[0].board.moves.begin();
 
     // While we have not evaluated all the root's children
@@ -253,7 +254,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                     || (this->nodeStack[1].score == this->nodeStack[0].score
                         && rand() % 2 == 0)) {
                     this->nodeStack[0].score = this->nodeStack[1].score;
-                    bestMove = std::prev(this->nodeStack[0].moveIterator);
+                    bestMove = this->nodeStack[0].prevIterator;
                 }
 
                 if (this->nodeStack[0].score > this->nodeStack[0].alpha) {
@@ -269,7 +270,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                         && rand() % 2 == 0)) {
                     this->nodeStack[depth].score = this->nodeStack[depth+1].score;
                     if (depth == 0) {
-                        bestMove = std::prev(this->nodeStack[0].moveIterator);
+                        bestMove = this->nodeStack[0].prevIterator;
                     }
                 }
 
@@ -294,7 +295,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                     || (this->nodeStack[1].score == this->nodeStack[0].score
                         && rand() % 2 == 0)) {
                     this->nodeStack[0].score = this->nodeStack[1].score;
-                    bestMove = std::prev(this->nodeStack[0].moveIterator);
+                    bestMove = this->nodeStack[0].prevIterator;
                 }
 
                 if (this->nodeStack[0].score > this->nodeStack[0].alpha) {
@@ -315,7 +316,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                         && rand() % 2 == 0)) {
                     this->nodeStack[depth].score = this->nodeStack[depth+1].score - 1;
                     if (depth == 0) {
-                        bestMove = std::prev(this->nodeStack[0].moveIterator);
+                        bestMove = this->nodeStack[0].prevIterator;
                     }
                 }
 
@@ -339,11 +340,12 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
             }
         }
         else {
-            // Generate next node, increment moveIterator
+            // Generate next node, increment iterators
             this->nodeStack[depth+1].board = this->nodeStack[depth].board;
             this->nodeStack[depth+1].board.updateBoard(
                     (this->nodeStack[depth].isMaxNode ? this->color : -this->color),
                     *this->nodeStack[depth].moveIterator);
+            this->nodeStack[depth].prevIterator = this->nodeStack[depth].moveIterator;
             this->nodeStack[depth].moveIterator++;
 
             // If the next depth is not at the depth limit
@@ -378,6 +380,8 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
 
                 this->nodeStack[depth].moveIterator =
                     this->nodeStack[depth].board.moves.begin();
+                this->nodeStack[depth].prevIterator =
+                    this->nodeStack[depth].moveIterator;
                 this->nodeStack[depth].lastMove = this->nodeStack[depth].board.moves.end();
             }
             else {
@@ -389,7 +393,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                     if (leafScore > this->nodeStack[depth].score) {
                         this->nodeStack[depth].score = leafScore;
                         if (depth == 0) {
-                            bestMove = std::prev(this->nodeStack[0].moveIterator);
+                            bestMove = this->nodeStack[0].prevIterator;
                         }
                     }
 

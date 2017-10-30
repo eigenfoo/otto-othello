@@ -17,7 +17,7 @@ class othelloPlayer {
 
         // Driver for moves, regardless of player
         std::pair<int, std::list<int>> move(othelloBoard &board,
-                std::map<int, std::list<int>> &legalMoves,
+                std::unordered_map<int, std::list<int>> &legalMoves,
                 bool &pass, std::string &moveHistory);
 
     private:
@@ -27,8 +27,9 @@ class othelloPlayer {
             int beta;
             int score;
             othelloBoard board;
-            std::map<int, std::list<int>>::iterator moveIterator;
-            std::map<int, std::list<int>>::iterator lastMove;
+            std::unordered_map<int, std::list<int>>::iterator prevIterator;
+            std::unordered_map<int, std::list<int>>::iterator moveIterator;
+            std::unordered_map<int, std::list<int>>::iterator lastMove;
         };
 
         std::array<node, 64> nodeStack = {};
@@ -40,13 +41,13 @@ class othelloPlayer {
 
         // Prompts user for next move
         std::pair<int, std::list<int>> humanMove(
-                std::map<int, std::list<int>> &legalMoves, bool &pass);
+                std::unordered_map<int, std::list<int>> &legalMoves, bool &pass);
 
         int coord2index(std::string coord);
 
         // Driver for the AI algorithm
         std::pair<int, std::list<int>> computerMove(othelloBoard &board,
-                std::map<int, std::list<int>> &legalMoves, bool &pass, std::string &moveHistory);
+                std::unordered_map<int, std::list<int>> &legalMoves, bool &pass, std::string &moveHistory);
 
         // Returns time point
         std::chrono::time_point<std::chrono::system_clock> startTimer();

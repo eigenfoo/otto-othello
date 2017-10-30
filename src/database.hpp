@@ -2,7 +2,6 @@
 #define DATABASE_HPP
 
 #include <fstream>
-#include <unordered_map>
 #include "board.hpp"
 
 class othelloDatabase {

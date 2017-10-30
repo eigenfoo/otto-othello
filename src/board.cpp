@@ -74,7 +74,7 @@ void othelloBoard::displayLegalMoves() {
 // Finds all legal moves, writing to a reference to a hash table with
 // legal moves as keys, and a list of all discs to be flipped as values.
 void othelloBoard::findLegalMoves(int color,
-        std::map<int, std::list<int>> *pMoves) {
+        std::unordered_map<int, std::list<int>> *pMoves) {
     // Clear legal moves from previous ply
     this->moves.clear();
 
@@ -101,7 +101,7 @@ void othelloBoard::findLegalMoves(int color,
 // Writes the legal move and a list of all discs to be flipped as a pair to the
 // reference to a hash table.
 void othelloBoard::findLegalMoveInDirection(int &disc, int &color, int direction,
-        std::map<int, std::list<int>> *pMoves) {
+        std::unordered_map<int, std::list<int>> *pMoves) {
     std::pair<int, std::list<int>> legalMove;
     std::list<int> flippedDiscs;
     int currentSquare = 0;
@@ -132,7 +132,7 @@ void othelloBoard::findLegalMoveInDirection(int &disc, int &color, int direction
         // Second condition is to resolve edge case of
         // disc immediately adjacent to original disc.
         else if (currentSquare == 0 && !flippedDiscs.empty()) {
-            std::map<int, std::list<int>>::iterator it = pMoves->find(i);
+            std::unordered_map<int, std::list<int>>::iterator it = pMoves->find(i);
 
             if (it != pMoves->end()) {
                 it->second.merge(flippedDiscs);

@@ -1,11 +1,11 @@
 #ifndef BOARD_HPP
 #define BOARD_HPP
 
+#include <unordered_map>
 #include <iostream>
 #include <vector>
 #include <list>
 #include <tuple>
-#include <map>
 #include <algorithm>
 
 class othelloBoard {
@@ -25,7 +25,7 @@ class othelloBoard {
         // moves is a hash table specifying all possible moves from the
         // current board position. Possible moves are keys, and a list of
         // all pieces to be flipped are values.
-        std::map<int, std::list<int>> moves;
+        std::unordered_map<int, std::list<int>> moves;
 
         // Constructor
         othelloBoard();
@@ -39,13 +39,13 @@ class othelloBoard {
         // Finds all legal moves, writing to a reference to a hash table with
         // legal moves as keys, and a list of all discs to be flipped as values.
         void findLegalMoves(int color,
-                std::map<int, std::list<int>> *pMoves);
+                std::unordered_map<int, std::list<int>> *pMoves);
 
         // Helper function to find a legal move given a disc, its color and a direction.
         // Writes the legal move and a list of all discs to be flipped as a pair to the
         // reference to a hash table.
         void findLegalMoveInDirection(int &disc, int &color, int direction,
-                std::map<int, std::list<int>> *pMoves);
+                std::unordered_map<int, std::list<int>> *pMoves);
 
         // Update board after a move
         void updateBoard(int color, std::pair<int, std::list<int>> move);

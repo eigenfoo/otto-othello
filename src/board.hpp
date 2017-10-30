@@ -52,7 +52,6 @@ class othelloBoard {
 
         bool terminalState();
 
-    private: 
         // Helper function to convert board square index to coordinate
         // strings
         void index2coord(int index, int &colNum, int &rowNum);

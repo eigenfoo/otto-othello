@@ -45,7 +45,8 @@ std::pair<int, std::list<int>> othelloPlayer::humanMove(
         std::istringstream iss(str);
         iss >> moveNum;
 
-        if (coordIndex != -1 && legalMoves.find(coordIndex) != legalMoves.end()) {
+        if (coordIndex != -1
+                && legalMoves.find(coordIndex) != legalMoves.end()) {
             std::cout << std::endl;
             return *legalMoves.find(coordIndex);
         }
@@ -148,61 +149,67 @@ int othelloPlayer::coord2index(std::string coord) {
 
 // Driver for the AI algorithm
 std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
-        std::unordered_map<int, std::list<int>> &legalMoves, bool &pass, std::string &moveHistory) {
-    std::chrono::time_point<std::chrono::system_clock> startTime =
-        this->startTimer();
+        std::unordered_map<int, std::list<int>> &legalMoves, bool &pass,
+        std::string &moveHistory) {
+    std::chrono::time_point<std::chrono::system_clock> startTime
+        = this->startTimer();
     std::pair<int, std::list<int>> move;
+    std::pair<int, std::list<int>> bestMove;
+    std::unordered_map<std::string, int>::iterator query
+        = this->database.openingBook.find(moveHistory);
 
     if (legalMoves.empty()) {
         std::cout << "No legal moves!" << std::endl;
-        std::cout << "\tComputer passes.\n" << std::endl;
+        std::cout << "\tComputer passes." << std::endl;
         pass = true;
-        return move;
     }
     else if (legalMoves.size() == 1) {
         std::cout << "Only one legal move!" << std::endl;
-        std::cout << "\tComputer takes only legal move.\n" << std::endl;
-        move = *(legalMoves.begin());
-        return move;
+        std::cout << "\tComputer takes only legal move." << std::endl;
+        bestMove = *(legalMoves.begin());
     }
-
-    std::unordered_map<std::string, int>::iterator query = 
-        this->database.openingBook.find(moveHistory);
-    if (query != this->database.openingBook.end()) {
+    else if (query != this->database.openingBook.end()) {
         std::cout << "Known opening!" << std::endl;
-        std::cout << "\tComputer takes next move from opening book.\n" << std::endl;
-        move = *legalMoves.find(query->second);
-        return move;
+        std::cout << "\tComputer takes next move from opening book."
+            << std::endl;
+        bestMove = *legalMoves.find(query->second);
+    }
+    else {
+        // Search by iterative deepening
+        std::cout << "Searching game tree..." << std::endl;
+        int maxDepth = 64 - board.discsOnBoard;
+
+        for (int depthLimit = 1; depthLimit <= maxDepth; depthLimit++) {
+            std::cout << "\tSearching to depth " << depthLimit;
+
+            move = this->depthLimitedAlphaBeta(board, depthLimit, startTime,
+                    board.timeLimit);
+
+            if (move.first == -1) {
+                std::cout << "\t\tSearch aborted." << std::endl;
+                break;
+            }
+            else {
+                std::cout << "\t\tSearch complete." << std::endl;
+                bestMove = move;
+            }
+
+            // If time is more than half up, don't bother with next depth
+            if (this->stopTimer(startTime) > 0.5*board.timeLimit) {
+                break;
+            }
+        }
     }
 
-    // Search by iterative deepening
-    std::cout << "Searching game tree..." << std::endl;
-    int maxDepth = 64 - board.discsOnBoard;
-    std::pair<int, std::list<int>> bestMove;
-
-    for (int depthLimit = 1; depthLimit <= maxDepth; depthLimit++) {
-        std::cout << "\tSearching to depth " << depthLimit;
-
-        move = this->depthLimitedAlphaBeta(board, depthLimit, startTime,
-                board.timeLimit);
-
-        if (move.first == -1) {
-            std::cout << "\t\tSearch aborted." << std::endl;
-            break;
-        }
-        else {
-            std::cout << "\t\tSearch complete." << std::endl;
-            bestMove = move;
-        }
-
-        // If time is more than half up, don't bother searching to next depth
-        if (this->stopTimer(startTime) > 0.5*board.timeLimit) {
-            break;
-        }
-    }
-
-    std::cout << "Time elapsed: " << this->stopTimer(startTime) << " sec\n"
+    std::cout << "\tTime elapsed: " << this->stopTimer(startTime) << " sec"
         << std::endl;
+
+    int rowNum = 0, colNum = 0;
+    std::string colCoord = "ABCDEFGH";
+    std::string rowCoord = "12345678";
+    board.index2coord(bestMove.first, rowNum, colNum);
+    std::cout << "\tComputer takes: " << colCoord[colNum] << rowCoord[rowNum]
+        << "\n" << std::endl;
 
     return bestMove;
 }
@@ -248,11 +255,12 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
     // While we have not evaluated all the root's children
     while (true) {
         // If we have evaluated all children
-        if (this->nodeStack[depth].moveIterator == this->nodeStack[depth].lastMove) {
+        if (this->nodeStack[depth].moveIterator
+                == this->nodeStack[depth].lastMove) {
             if (depth-- == 0) {
                 if (this->nodeStack[1].score > this->nodeStack[0].score
-                    || (this->nodeStack[1].score == this->nodeStack[0].score
-                        && rand() % 2 == 0)) {
+                        || (this->nodeStack[1].score == this->nodeStack[0].score
+                            && rand() % 2 == 0)) {
                     this->nodeStack[0].score = this->nodeStack[1].score;
                     bestMove = this->nodeStack[0].prevIterator;
                 }
@@ -266,7 +274,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
 
             if (this->nodeStack[depth].isMaxNode) {
                 if (this->nodeStack[depth+1].score > this->nodeStack[depth].score
-                    || (this->nodeStack[depth+1].score == this->nodeStack[depth].score
+                        || (this->nodeStack[depth+1].score == this->nodeStack[depth].score
                         && rand() % 2 == 0)) {
                     this->nodeStack[depth].score = this->nodeStack[depth+1].score;
                     if (depth == 0) {

@@ -5,10 +5,11 @@
 #include <unordered_map>
 #include "board.hpp"
 
-class database {
+class othelloDatabase {
     public:
         std::unordered_map<std::string, int> openingBook = {};
 
+        othelloDatabase();
         void loadOpenings();
 };
 

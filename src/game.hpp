@@ -10,6 +10,7 @@ class othelloGame {
         othelloBoard board;
         othelloPlayer blackPlayer;
         othelloPlayer whitePlayer;
+        std::string moveHistory = "";
 
         int toMove = 1;
         bool gameOver = false;

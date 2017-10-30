@@ -4,7 +4,7 @@ CXX = g++
 CXXFLAGS = -std=c++11 -march=native -O3 -Wall
 LDFLAGS =
 
-SOURCES = othello.cpp game.cpp board.cpp player.cpp heuristic.cpp
+SOURCES = othello.cpp game.cpp board.cpp player.cpp heuristic.cpp database.cpp
 OBJECTS = $(SOURCES:.cpp=.o)
 EXECUTABLE = othello.exe
 

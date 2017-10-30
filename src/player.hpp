@@ -18,7 +18,7 @@ class othelloPlayer {
         // Driver for moves, regardless of player
         std::pair<int, std::list<int>> move(othelloBoard &board,
                 std::map<int, std::list<int>> &legalMoves,
-                bool &pass);
+                bool &pass, std::string &moveHistory);
 
     private:
         struct node {
@@ -36,8 +36,9 @@ class othelloPlayer {
 
         othelloHeuristic heuristic;
 
+        othelloDatabase database;
+
         // Prompts user for next move
-        // `board` is only necessary for polymorphic `move`...
         std::pair<int, std::list<int>> humanMove(
                 std::map<int, std::list<int>> &legalMoves, bool &pass);
 
@@ -45,7 +46,7 @@ class othelloPlayer {
 
         // Driver for the AI algorithm
         std::pair<int, std::list<int>> computerMove(othelloBoard &board,
-                std::map<int, std::list<int>> &legalMoves, bool &pass);
+                std::map<int, std::list<int>> &legalMoves, bool &pass, std::string &moveHistory);
 
         // Returns time point
         std::chrono::time_point<std::chrono::system_clock> startTimer();

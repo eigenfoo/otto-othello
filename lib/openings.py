@@ -1,13 +1,11 @@
 '''
 Script to convert Othello openings catalog from
 http://www.othello.nl/content/anim/openings.txt
-to a .csv file, to be used as an openings book.
+to a .txt file, to be used as an openings book.
 '''
 
-import subprocess
 
-
-def make_index(string):
+def make_index(string, lastComma=True):
     index = ''
     string = string.lower()
     moves = [string[i:i+2] for i in range(0, len(string), 2)]
@@ -49,13 +47,14 @@ def make_index(string):
 
         index += str(8*row + col) + ','
 
+    if lastComma:
+        return index + '\n'
+
     return index[:-1] + '\n'
 
 
-with open('openings.dat', 'r') as infile:
-    with open('openings.csv', 'w') as outfile:
-        for line in infile:
-            splut = line.split()
-            outfile.write(make_index(splut[0]))
-
-subprocess.run(['sort', '-u', '-o', 'openings.csv', 'openings.csv'])
+with open('openings.dat', 'r') as infile, open('openings.txt', 'w') as outfile:
+    for line in infile:
+        splut = line.split()
+        outfile.write(make_index(splut[0][:-2], lastComma=True))
+        outfile.write(make_index(splut[0][-2:], lastComma=False))

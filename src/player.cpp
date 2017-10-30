@@ -4,21 +4,22 @@
 // Driver for player's move, regardless of player
 std::pair<int, std::list<int>> othelloPlayer::move(othelloBoard &board,
         std::map<int, std::list<int>> &legalMoves,
-        bool &pass) {
+        bool &pass, std::string &moveHistory) {
 
     std::pair<int, std::list<int>> moveChoice;
     if (this->computer) {
-        moveChoice = this->computerMove(board, legalMoves, pass);
+        moveChoice = this->computerMove(board, legalMoves, pass, moveHistory);
     }
     else {
         moveChoice = this->humanMove(legalMoves, pass);
     }
 
+    moveHistory.append(std::to_string(moveChoice.first) + ",");
+
     return moveChoice;
 }
 
 // Prompts user for next move
-// `board` is only necessary for polymorphic `move`...
 std::pair<int, std::list<int>> othelloPlayer::humanMove(
         std::map<int, std::list<int>> &legalMoves, bool &pass) {
     std::string str;
@@ -147,7 +148,7 @@ int othelloPlayer::coord2index(std::string coord) {
 
 // Driver for the AI algorithm
 std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
-        std::map<int, std::list<int>> &legalMoves, bool &pass) {
+        std::map<int, std::list<int>> &legalMoves, bool &pass, std::string &moveHistory) {
     std::chrono::time_point<std::chrono::system_clock> startTime =
         this->startTimer();
     std::pair<int, std::list<int>> move;
@@ -165,7 +166,17 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
         return move;
     }
 
-    // TODO check if board position is in opening book
+    std::unordered_map<std::string, int>::iterator query = 
+        this->database.openingBook.find(moveHistory);
+    if (query != this->database.openingBook.end()) {
+        std::cout << "Known opening!" << std::endl;
+        std::cout << "\tComputer takes next move." << std::endl;
+        //std::cout << this->pastMoves << std::endl;
+        //std::cout << query->first << std::endl;
+        //std::cout << query->second << std::endl;
+        move = *legalMoves.find(query->second);
+        return move;
+    }
 
     // Search by iterative deepening
     std::cout << "Searching game tree..." << std::endl;

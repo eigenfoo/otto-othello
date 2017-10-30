@@ -129,12 +129,12 @@ void othelloGame::move(int color) {
     if (color == 1) {
         std::cout << "Black to move" << std::endl;
         move = this->blackPlayer.move(this->board, this->board.moves,
-                this->board.passes[0]);
+                this->board.passes[0], this->moveHistory);
     } 
     else if (color == -1) {
         std::cout << "White to move" << std::endl;
         move = this->whitePlayer.move(this->board, this->board.moves,
-                this->board.passes[0]);
+                this->board.passes[0], this->moveHistory);
     }
 
     if (!this->board.passes[0]) {

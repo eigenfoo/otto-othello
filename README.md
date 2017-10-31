@@ -36,11 +36,16 @@ manually using your preferred C++ compiler.
   respectively.
   - The numbers in the final two rows represent whose turn it is (black or white),
   and the time limit (for any turn played by the computer).
-  - Two example board text files are included under the `test/` directory.
+  - Several example board text files are included under the `test/` directory.
 
 ### Search Algorithm
 The search algorithm is a straightforward minimax search with alpha/beta
 pruning and iterative deepening.
+
+In the endgame (specifically, when there are fewer than 10 possible moves
+left in the entire game), the algorithm conducts a complete search of the
+remainder of the game tree. In other words, instead of using heuristic
+evaluations of earlier cutoff states.
 
 ### Heuristic Function
 One of the most critical components of the search algorithm is the heuristic

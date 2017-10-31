@@ -160,8 +160,9 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
 
     if (legalMoves.empty()) {
         std::cout << "No legal moves!" << std::endl;
-        std::cout << "\tComputer passes." << std::endl;
+        std::cout << "\tComputer passes.\n" << std::endl;
         pass = true;
+        return bestMove;
     }
     else if (legalMoves.size() == 1) {
         std::cout << "Only one legal move!" << std::endl;
@@ -175,28 +176,41 @@ std::pair<int, std::list<int>> othelloPlayer::computerMove(othelloBoard &board,
         bestMove = *legalMoves.find(query->second);
     }
     else {
-        // Search by iterative deepening
-        std::cout << "Searching game tree..." << std::endl;
         int maxDepth = 64 - board.discsOnBoard;
 
-        for (int depthLimit = 1; depthLimit <= maxDepth; depthLimit++) {
-            std::cout << "\tSearching to depth " << depthLimit;
+        if (maxDepth < 10) {
+            // Search to terminal states
+            std::cout << "Searching remainder of game tree..." << std::endl;
+            std::cout << "\tSearching to depth " << maxDepth;
 
-            move = this->depthLimitedAlphaBeta(board, depthLimit, startTime,
+            bestMove = this->depthLimitedAlphaBeta(board, maxDepth, startTime,
                     board.timeLimit);
 
-            if (move.first == -1) {
-                std::cout << "\t\tSearch aborted." << std::endl;
-                break;
-            }
-            else {
-                std::cout << "\t\tSearch complete." << std::endl;
-                bestMove = move;
-            }
+            std::cout << "\t\tSearch complete." << std::endl;
+        }
+        else {
+            // Search by iterative deepening
+            std::cout << "Searching game tree..." << std::endl;
 
-            // If time is more than half up, don't bother with next depth
-            if (this->stopTimer(startTime) > 0.5*board.timeLimit) {
-                break;
+            for (int depthLimit = 1; depthLimit <= maxDepth; depthLimit++) {
+                std::cout << "\tSearching to depth " << depthLimit;
+
+                move = this->depthLimitedAlphaBeta(board, depthLimit, startTime,
+                        board.timeLimit);
+
+                if (move.first == -1) {
+                    std::cout << "\t\tSearch aborted." << std::endl;
+                    break;
+                }
+                else {
+                    std::cout << "\t\tSearch complete." << std::endl;
+                    bestMove = move;
+                }
+
+                // If time is more than half up, don't bother with next depth
+                if (this->stopTimer(startTime) > 0.5*board.timeLimit) {
+                    break;
+                }
             }
         }
     }
@@ -275,7 +289,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
             if (this->nodeStack[depth].isMaxNode) {
                 if (this->nodeStack[depth+1].score > this->nodeStack[depth].score
                         || (this->nodeStack[depth+1].score == this->nodeStack[depth].score
-                        && rand() % 2 == 0)) {
+                            && rand() % 2 == 0)) {
                     this->nodeStack[depth].score = this->nodeStack[depth+1].score;
                     if (depth == 0) {
                         bestMove = this->nodeStack[0].prevIterator;
@@ -310,10 +324,8 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                     this->nodeStack[0].alpha = this->nodeStack[0].score;
                 }
 
-                // FIXME this gives a segfault, probably trying to get std::prev
-                // of a begin() iterator...
                 //this->killerMoves[1][1] = this->killerMoves[1][0];
-                //this->killerMoves[1][0] = std::prev(this->nodeStack[1].moveIterator)->first;
+                //this->killerMoves[1][0] = this->nodeStack[1].prevIterator->first;
 
                 break; // FIXME should it be break or continue here???
             }
@@ -332,10 +344,8 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                     this->nodeStack[depth].alpha = this->nodeStack[depth].score;
                 }
 
-                // FIXME this gives a segfault, probably trying to get std::prev
-                // of a begin() iterator...
                 //this->killerMoves[depth+1][1] = this->killerMoves[depth+1][0];
-                //this->killerMoves[depth+1][0] = std::prev(this->nodeStack[depth+1].moveIterator)->first;
+                //this->killerMoves[depth+1][0] = this->nodeStack[depth+1].prevIterator->first;
             }
             else {
                 if (this->nodeStack[depth+1].score < this->nodeStack[depth].score) {
@@ -371,17 +381,20 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
                         &this->nodeStack[depth].board.moves);
 
                 /*
-                auto foo1 = this->nodeStack[depth].board.moves.find(this->killerMoves[depth][0]);
-                auto foo2 = this->nodeStack[depth].board.moves.find(this->killerMoves[depth][1]);
-                auto end = this->nodeStack[depth].board.moves.end();
-                if (foo1 != end && foo2 != end) {
+                std::unordered_map<int, std::list<int>> foo1
+                    = this->nodeStack[depth].board.moves.find(this->killerMoves[depth][0]);
+                std::unordered_map<int, std::list<int>> foo2
+                    = this->nodeStack[depth].board.moves.find(this->killerMoves[depth][1]);
+
+                if (foo1 != this->nodeStack[depth].lastMove
+                    && foo2 != this->nodeStack[depth].lastMove) {
                     std::iter_swap(this->nodeStack[depth].board.moves.begin(), foo1);
                     std::iter_swap(std::next(this->nodeStack[depth].board.moves.begin()), foo2);
                 }
-                else if (foo1 != end) {
+                else if (foo1 != this->nodeStack[depth].lastMove) {
                     std::iter_swap(this->nodeStack[depth].board.moves.begin(), foo1);
                 }
-                else if (foo2 != end) {
+                else if (foo2 != this->nodeStack[depth].lastMove) {
                     std::iter_swap(this->nodeStack[depth].board.moves.begin(), foo2);
                 }
                 */
@@ -422,7 +435,7 @@ std::pair<int, std::list<int>> othelloPlayer::depthLimitedAlphaBeta(
         }
 
         // If we are almost out of time, failure
-        if (this->stopTimer(startTime) > 0.99*timeLimit) {
+        if (this->stopTimer(startTime) > 0.998*timeLimit) {
             std::pair<int, std::list<int>> move;
             move.first = -1;
             return move;

@@ -11,7 +11,7 @@ a straightforward minimax search with alpha-beta pruning.
 * UNIX `make` utility (recommended, but not required)
 
 In a supported terminal, the command prompt should look like this:
-![board](./doc/demo.png)
+![board](./doc/demo.png =250x100)
 
 ## Installation and Usage
 Using git:

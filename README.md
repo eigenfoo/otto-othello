@@ -10,12 +10,15 @@ a straightforward minimax search with alpha-beta pruning.
 * g++ or another C++ compiler
 * UNIX `make` utility (recommended, but not required)
 
+In a supported terminal, the command prompt should look like this:
+![board](./doc/demo.png)
+
 ## Installation and Usage
 Using git:
 
 ```
 $ git clone https://github.com/eigenfoo/otto-othello.git
-$ cd otto-othello/src
+$ cd otto-othello
 $ make
 $ ./othello.exe
 ```
@@ -38,13 +41,17 @@ manually using your preferred C++ compiler.
   and the time limit (for any turn played by the computer).
   - Several example board text files are included under the `test/` directory.
 
-### Search Algorithm
-The search algorithm is a straightforward minimax search with alpha/beta
-pruning and iterative deepening.
+### AI Algorithm
+The search algorithm is a vanilla minimax search with iterative deepening
+depth-first search and alpha-beta pruning.
 
-In the endgame (specifically, when there are fewer than 10 possible moves
-left in the entire game), the algorithm conducts a complete search of the
-remainder of the game tree. In other words, instead of using heuristic
+In the opening, the AI may take its moves from a database of commonly
+played openings (sources [here](http://www.othello.nl/content/anim/openings.txt)
+and [here](http://www.samsoft.org.uk/reversi/openings.htm)). If the sequence of
+moves is not found in the database, the AI resorts to its search algorithm.
+
+Near the endgame, the AI conducts a complete search of the remainder of the
+game tree, searching down to the terminal states instead of using heuristic
 evaluations of earlier cutoff states.
 
 ### Heuristic Function

@@ -37,6 +37,15 @@ void othelloBoard::displayBoard(int color) {
             }
         }
 
+        if (i == 24) {
+            std::cout << "\t\tBlack: " << std::count(this->positions.begin(),
+                    this->positions.end(), 1);
+        }
+        else if (i == 32) {
+            std::cout << "\t\tWhite: " << std::count(this->positions.begin(),
+                    this->positions.end(), -1);
+        }
+
         std::cout << std::endl;
     }
 

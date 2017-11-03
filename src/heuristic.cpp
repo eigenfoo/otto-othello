@@ -12,8 +12,8 @@ int othelloHeuristic::evaluate(othelloBoard &board, int color) {
         return 5*mobility(board, color)
             + 5*potentialMobility(board, color)
             + 20*squareWeights(board, color)
-            + 1000*corners(board, color)
-            + 1000*stability(board, color);
+            + 5000*corners(board, color)
+            + 5000*stability(board, color);
     }
     else if (board.discsOnBoard <= 58) {
         // Midgame
@@ -265,14 +265,14 @@ int othelloHeuristic::parity(othelloBoard &board) {
 // Assigns a weight to every square on the board
 int othelloHeuristic::squareWeights(othelloBoard &board, int &color) {
     std::vector<int> weights = {
-         100, -100, 100,  50,  50, 100, -100,  100,
+         200, -100, 100,  50,  50, 100, -100,  200,
         -100, -200, -50, -50, -50, -50, -200, -100,
          100,  -50, 100,   0,   0, 100,  -50,  100,
           50,  -50,   0,   0,   0,   0,  -50,   50,
           50,  -50,   0,   0,   0,   0,  -50,   50,
          100,  -50, 100,   0,   0, 100,  -50,  100,
         -100, -200, -50, -50, -50, -50, -200, -100,
-         100, -100, 100,  50,  50, 100, -100,  100,
+         200, -100, 100,  50,  50, 100, -100,  200,
     };
 
     if (board.positions[0] != 0) {

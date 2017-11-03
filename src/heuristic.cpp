@@ -12,8 +12,8 @@ int othelloHeuristic::evaluate(othelloBoard &board, int color) {
         return 5*mobility(board, color)
             + 5*potentialMobility(board, color)
             + 20*squareWeights(board, color)
-            + 5000*corners(board, color)
-            + 5000*stability(board, color);
+            + 10000*corners(board, color)
+            + 10000*stability(board, color);
     }
     else if (board.discsOnBoard <= 58) {
         // Midgame
@@ -22,15 +22,15 @@ int othelloHeuristic::evaluate(othelloBoard &board, int color) {
             + 2*potentialMobility(board, color)
             + 10*squareWeights(board, color)
             + 100*parity(board)
-            + 1000*corners(board, color)
-            + 1000*stability(board, color);
+            + 10000*corners(board, color)
+            + 10000*stability(board, color);
     }
     else {
         // Endgame
         return 500*discDifference(board, color)
             + 500*parity(board)
-            + 1000*corners(board, color)
-            + 1000*stability(board, color);
+            + 10000*corners(board, color)
+            + 10000*stability(board, color);
     }
 }
 

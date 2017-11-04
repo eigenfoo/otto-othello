@@ -61,6 +61,7 @@ int promptNewGame() {
         std::cout << "\t2 -> Load" << std::endl;
         std::cout << "\tSelection: ";
         std::cin >> str;
+        while (std::cin.get() != '\n');          // clear buffer
         std::istringstream iss(str);
         iss >> choice;
 
@@ -94,6 +95,7 @@ void initializeGame(int choice, othelloGame &game,
         std::string fileName;
         std::cout << "Enter file name: ";
         std::cin >> fileName;
+        while (std::cin.get() != '\n');          // clear buffer
         std::cout << std::endl;
 
         blackComputer = promptAIPlayer(1);
@@ -116,6 +118,7 @@ bool promptAIPlayer(int player) {
         std::cout << "\tn -> No" << std::endl;
         std::cout << "\tSelection: ";
         std::cin >> str;
+        while (std::cin.get() != '\n');          // clear buffer
         std::istringstream iss(str);
         iss >> ch;
 
@@ -146,6 +149,7 @@ float promptAITimeLimit() {
     do {
         std::cout << "Enter time limit for computer (seconds per move): ";
         std::cin >> str;
+        while (std::cin.get() != '\n');          // clear buffer
         std::istringstream iss(str);
         iss >> limit;
 

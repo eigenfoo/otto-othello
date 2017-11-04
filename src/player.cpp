@@ -32,6 +32,7 @@ std::pair<int, std::list<int>> othelloPlayer::humanMove(
         std::cout << "No legal moves!" << std::endl;
         std::cout << "\tEnter any non-empty string to pass: ";
         std::cin >> str;
+        while (std::cin.get() != '\n');          // clear buffer
         std::cout << std::endl;
         pass = true;
         return move;
@@ -40,6 +41,7 @@ std::pair<int, std::list<int>> othelloPlayer::humanMove(
     do {
         std::cout << "\tSelect move number/square coordinate: ";
         std::cin >> str;
+        while (std::cin.get() != '\n');          // clear buffer
 
         coordIndex = coord2index(str);
         std::istringstream iss(str);

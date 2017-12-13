@@ -33,13 +33,13 @@ manually using your preferred C++ compiler.
 ### Save Files
   - There is the option to load a saved board at the start of a game.
   - The first 8 rows of the save file represent the state of the board.
-    - _Spacing is important_: each line must begin with a space, each
-    number must be separated by a single space, and there must not be any
-    trailing spaces.
+    - _Spacing is important_: each line must not begin with a space, but each
+      number must be separated by a single space, and there must not be any
+      trailing spaces.
   - 0, 1, and 2 represent an emtpy square, a black disc, and a white disc,
-  respectively.
-  - The numbers in the final two rows represent whose turn it is (black or white),
-  and the time limit (for any turn played by the computer).
+    respectively.
+  - The numbers in the final two rows represent whose turn it is (1 for black or
+    2 for white), and the time limit (for any turn played by the computer).
   - Several example board text files are included under the `test/` directory.
 
 ### AI Algorithm
@@ -69,8 +69,8 @@ statistics, with the weights adapting as the game progresses:
     Has zero weight in the opening, but increases to a very large weight in
     the midgame and endgame.)
   - Disc difference (Measures the difference in the number of discs on the
-    board. Has a no weight in the opening, but increases to a moderate weight
-    in the midgame, to a significant weight in the endgame.)
+    board. Has zero weight in the opening, but increases to a moderate weight in
+    the midgame, and to a significant weight in the endgame.)
   - Mobility (Measures the number of moves the player is currently able to
     make. Has significant weight in the opening game, but diminishes to zero
     weight towards the endgame.)
